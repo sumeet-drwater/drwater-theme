@@ -134,6 +134,9 @@ class CartDiscount extends Component {
       return;
     }
 
+    // If a request is already in-flight, ignore — prevents double-remove on rapid clicks
+    if (this.#activeFetch) return;
+
     const pill = event.target.closest('.cart-discount__pill');
     if (!(pill instanceof HTMLLIElement)) return;
 
