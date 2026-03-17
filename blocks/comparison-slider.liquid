@@ -50,7 +50,7 @@
         {%- if block.settings.before_image != blank -%}
           {{
             block.settings.before_image
-            | image_url: width: 3840
+            | image_url: width: 1200
             | image_tag:
               loading: 'lazy',
               class: 'before-image',
@@ -80,7 +80,7 @@
         {%- if block.settings.after_image != blank -%}
           {{
             block.settings.after_image
-            | image_url: width: 3840
+            | image_url: width: 1200
             | image_tag:
               loading: 'lazy',
               class: 'after-image',

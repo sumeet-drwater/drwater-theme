@@ -27,21 +27,21 @@
       {%- liquid
         assign height = preview_image.width | divided_by: preview_image.aspect_ratio | round
         assign sizes = '100vw'
-        assign widths = '832, 1200, 1600, 1920, 2560, 3840'
+        assign widths = '640, 960, 1280, 1600, 1920'
         assign loading = 'lazy'
       -%}
 
       {%- if block.settings.media_type_1 == 'image' -%}
         {{
           block.settings.image_1
-          | image_url: width: 3840
+          | image_url: width: 1920
           | image_tag: height: height, sizes: sizes, widths: widths, class: 'layered-slideshow__image', loading: loading
         }}
       {%- else -%}
         {%- if block.settings.video_1.preview_image -%}
           {{
             block.settings.video_1.preview_image
-            | image_url: width: 3840
+            | image_url: width: 1920
             | image_tag:
               height: height,
               sizes: sizes,

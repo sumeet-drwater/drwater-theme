@@ -442,14 +442,16 @@
     Buy Now
   </button>
   <div class="buy-now-payments">
-    <div class="payment-methods-container">
+    <div class="buy-now-payments__row">
       <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/visa.svg?v=1773731283" alt="Visa" class="payment-icon"/>
       <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/master.svg?v=1773731336" alt="Mastercard" class="payment-icon"/>
       <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/american_express.svg?v=1773731343" alt="Amex" class="payment-icon"/>
-      <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/paypal.svg?v=1773731355" alt="PayPal" class="payment-icon"/>
+      <span class="buy-now-payments__divider"></span>
+      <span class="buy-now-payments__text">or pay $0 today with</span>
+      <span class="buy-now-payments__divider"></span>
       <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/apple_pay.svg?v=1773731361" alt="Apple Pay" class="payment-icon"/>
       <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/klarna.svg?v=1773731367" alt="Klarna" class="payment-icon"/>
-      <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/afterpay.svg?v=1773731372" alt="Afterpay" class="payment-icon"/>
+      <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/paypal.svg?v=1773731355" alt="PayPal" class="payment-icon"/>
     </div>
   </div>
 {% endif %}
@@ -615,26 +617,42 @@
   flex: 1 1 100%;
 }
 
-.buy-now-payments .payment-methods-container {
+.buy-now-payments__row {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 8px 0;
+  gap: 8px;
+  padding: 10px 0 4px;
 }
 
 .buy-now-payments .payment-icon {
-  height: 24px;
+  height: 22px;
   width: auto;
+}
+
+.buy-now-payments__text {
+  font-size: 11px;
+  color: #666;
+  font-family: 'JUST-Sans-Medium';
+  white-space: nowrap;
+}
+
+.buy-now-payments__divider {
+  width: 1px;
+  height: 16px;
+  background: #ddd;
 }
 
 @media (max-width: 749px) {
   .buy-now-payments .payment-icon {
     height: 18px;
   }
-  .buy-now-payments .payment-methods-container {
-    gap: 4px;
+  .buy-now-payments__row {
+    gap: 6px;
+  }
+  .buy-now-payments__text {
+    font-size: 10px;
   }
 }
 

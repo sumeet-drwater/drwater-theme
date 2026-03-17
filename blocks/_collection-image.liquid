@@ -35,12 +35,12 @@
       assign media_width_desktop = 100 | divided_by: 2 | append: 'vw'
       assign media_width_mobile = '100vw'
       assign sizes = '(min-width: 750px) ' | append: media_width_desktop | append: ', ' | append: media_width_mobile
-      assign widths = '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+      assign widths = '240, 352, 600, 900, 1200'
     %}
-
+    {%- comment -%}[2026-03-17] Speed fix: capped from 3840→1200{%- endcomment -%}
     {{
       block_settings.collection.featured_image
-      | image_url: width: 3840
+      | image_url: width: 1200
       | image_tag: preload: true, class: 'collection-image__featured-image', widths: widths, sizes: sizes
     }}
   </div>

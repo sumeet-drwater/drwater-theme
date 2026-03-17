@@ -128,6 +128,8 @@ export class Slideshow extends Component {
       if (slide.hasAttribute('reveal')) {
         slide.removeAttribute('reveal');
         slide.setAttribute('aria-hidden', 'true');
+        // [2026-03-17] A11y fix: inert makes non-active slide focusables unreachable
+        slide.setAttribute('inert', '');
       }
     }
 
@@ -144,6 +146,8 @@ export class Slideshow extends Component {
         if (requestedSlide.hasAttribute('hidden')) {
           requestedSlide.setAttribute('reveal', '');
           requestedSlide.setAttribute('aria-hidden', 'false');
+          // [2026-03-17] A11y fix: restore focus access when slide becomes active
+          requestedSlide.removeAttribute('inert');
         }
 
         return this.slides.indexOf(requestedSlide);
@@ -216,6 +220,7 @@ export class Slideshow extends Component {
     const previousIndex = this.current;
 
     slide.setAttribute('aria-hidden', 'false');
+    slide.removeAttribute('inert'); // [2026-03-17] A11y fix
 
     if (this.#scroll) {
       this.#scroll.to(slide, { instant });
@@ -456,6 +461,7 @@ export class Slideshow extends Component {
 
     if (this.refs.slides?.[0]) {
       this.refs.slides[0].setAttribute('aria-hidden', 'false');
+      this.refs.slides[0].removeAttribute('inert'); // [2026-03-17] A11y fix: first slide is active
     }
   }
 
@@ -851,9 +857,16 @@ export class Slideshow extends Component {
     // Batch writes to the DOM
     scheduler.schedule(() => {
       // Update aria-hidden based on visibility
+      // [2026-03-17] A11y fix: also toggle inert so non-visible slide focusables
+      // are not reachable via keyboard/AT
       slides.forEach((slide) => {
         const isVisible = visibleSlides.includes(slide);
         slide.setAttribute('aria-hidden', `${!isVisible}`);
+        if (isVisible) {
+          slide.removeAttribute('inert');
+        } else {
+          slide.setAttribute('inert', '');
+        }
       });
     });
 

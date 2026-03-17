@@ -43,7 +43,7 @@
         assign media_width_mobile = '100vw'
         assign sizes = '(min-width: 750px) ' | append: media_width_desktop | append: ', ' | append: media_width_mobile
         assign lazy_sizes = 'auto, ' | append: sizes
-        assign widths = '832, 1200, 1600, 1920, 2560, 3840'
+        assign widths = '640, 960, 1280, 1600, 1920'
       %}
 
       {%- liquid
@@ -63,7 +63,7 @@
       {%- if block_settings.media_type_1 == 'image' -%}
         {{
           block_settings.image_1
-          | image_url: width: 3840
+          | image_url: width: 1920
           | image_tag: height: height, sizes: sizes, widths: widths, class: 'slide__image', loading: loading, fetchpriority: fetchpriority
         }}
       {%- else -%}
@@ -71,7 +71,7 @@
 
           {{
             block_settings.video_1.preview_image
-            | image_url: width: 3840
+            | image_url: width: 1920
             | image_tag:
               height: height,
               sizes: sizes,

@@ -61,7 +61,7 @@
 
 {{
   block.settings.image
-  | image_url: width: 3840
+  | image_url: width: 1200
   | image_tag:
       width: block.settings.image.width,
       heights: block.settings.image.height,
@@ -73,7 +73,14 @@
   {%- else -%}
     <div class="placeholder-image border-style size-style" style="{{ image_border_style }}"> 
       {% comment %} {{ 'detailed-apparel-1' | placeholder_svg_tag: 'hero__image' }} {% endcomment %}
-  <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/bottle_e52c214c-bbcf-412d-a52c-c97213a850f6.webp">
+  <!-- [2026-03-17] A11y fix: added alt, width, height to eliminate CLS and fix missing-alt violation -->
+  <img
+    src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/bottle_e52c214c-bbcf-412d-a52c-c97213a850f6.webp"
+    alt="Dr. Water hydrogen water bottle"
+    width="600"
+    height="600"
+    loading="lazy"
+  >
     </div>
   {%- endif -%}
 {% endcapture %}
