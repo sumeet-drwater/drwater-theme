@@ -171,13 +171,13 @@
 <div class="chat-container">
   <input type="checkbox" id="chat-toggle">
   <label class="chat-button" for="chat-toggle">
-    <img src="https://cdn.shopify.com/s/files/1/0671/4245/1372/files/November_sale_The_biggest_HydroStanley_sale_ever._2.png?v=1762719431" alt="Chatbot Icon" class="chat-icon" style="width: 55px; height: 55px; object-fit: contain;" />
+    <svg class="chat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="55" height="55" style="width:55px;height:55px;" aria-hidden="true" focusable="false"><path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="#051d60"/></svg>
            <div class="close-icon-container">
              <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth="2.3" stroke="white" fill="none" width="20" height="20"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
            </div>
   </label>
   <div class="chat-frame">
-    <iframe src="https://chatbot.ravvio.in/embed/f4ee7eb4-8b9a-4b1e-a629-27948c9af6a9" width="100%" height="100%" style="border: none;" title="Chatbot"></iframe>
+    <iframe src="https://chatbot.ravvio.in/embed/f4ee7eb4-8b9a-4b1e-a629-27948c9af6a9" width="100%" height="100%" style="border: none;" title="Chatbot" loading="lazy"></iframe>
   </div>
 </div>
 
@@ -215,9 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Observe body class changes
   new MutationObserver(updateVisibility)
     .observe(document.body, { attributes: true, attributeFilter: ['class'] });
-
-  // Fallback polling
-  setInterval(updateVisibility, 200);
 });
 </script>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}

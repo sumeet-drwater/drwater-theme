@@ -294,8 +294,25 @@
       fetch('/discount/HYDRATEFIRST')
         .then(function() {
           sessionStorage.setItem('hydratefirstApplied', 'true');
-          window.location.reload();
-        });
+          return fetch('/cart/update.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: JSON.stringify({ sections: ['{{ section.id }}'] })
+          });
+        })
+        .then(function(r) { return r && r.json(); })
+        .then(function(data) {
+          if (!data || !data.sections) return;
+          var sectionHtml = data.sections['{{ section.id }}'];
+          if (!sectionHtml) return;
+          var target = document.getElementById('shopify-section-{{ section.id }}');
+          if (!target) return;
+          var parser = new DOMParser();
+          var newDoc = parser.parseFromString(sectionHtml, 'text/html');
+          var newSection = newDoc.getElementById('shopify-section-{{ section.id }}');
+          if (newSection) target.innerHTML = newSection.innerHTML;
+        })
+        .catch(function() {});
     }
   })();
 </script>

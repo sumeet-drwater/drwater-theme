@@ -216,6 +216,8 @@ if (!customElements.get('add-to-cart-component')) {
 class ProductFormComponent extends Component {
   requiredRefs = ['variantId', 'liveRegion'];
   #abortController = new AbortController();
+  /** @type {AbortController | null} */
+  #atcFetchController = null;
 
   /** @type {number | undefined} */
   #timeout;
@@ -667,12 +669,17 @@ this._isBuyNow = false;
 
     const fetchCfg = fetchConfig('javascript', { body: formData });
 
+    // Abort any previous in-flight ATC request before starting a new one
+    if (this.#atcFetchController) this.#atcFetchController.abort();
+    this.#atcFetchController = new AbortController();
+
     fetch(Theme.routes.cart_add_url, {
       ...fetchCfg,
       headers: {
         ...fetchCfg.headers,
         Accept: 'text/html',
       },
+      signal: this.#atcFetchController.signal,
     })
       .then((response) => response.json())
       .then(async (response) => {
@@ -740,9 +747,8 @@ this._isBuyNow = false;
             }, SUCCESS_MESSAGE_DISPLAY_DURATION);
           }
 
-          // Fetch the updated cart to get the actual total quantity for this variant
-          await this.#fetchAndUpdateCartQuantity();
-
+          // Dispatch cart event immediately so the cart drawer opens without waiting
+          // for the quantity sync. The quantity sync runs in the background after.
           this.dispatchEvent(
             new CartAddEvent({}, id.toString(), {
               source: 'product-form-component',
@@ -751,6 +757,9 @@ this._isBuyNow = false;
               sections: response.sections,
             })
           );
+
+          // Sync the PDP quantity counter in background — does not block cart opening
+          this.#fetchAndUpdateCartQuantity();
           if (this._isBuyNow) {
   this._isBuyNow = false;
   window.location.href = '/checkout';
@@ -759,9 +768,10 @@ this._isBuyNow = false;
         }
       })
       .catch((error) => {
-        console.error(error);
+        if (error?.name !== 'AbortError') console.error(error);
       })
       .finally(() => {
+        this.#atcFetchController = null;
         cartPerformance.measureFromEvent('add:user-action', event);
       });
   }
