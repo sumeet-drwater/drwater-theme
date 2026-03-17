@@ -139,11 +139,7 @@ endif
 {% endif %} {% endcomment %}
  {% if discount_percentage > 0 and block.settings.show_discount %}
   <span class="discount-percentage">
-    {% if product.handle == 'dr-water-hydrotumbler' %}
-      Save {{ discount_percentage }}% use code 'PATRICKSDAY' 🍀
-    {% else %}
-      Save {{ discount_percentage }}% on first order
-    {% endif %}
+    Save {{ discount_percentage }}% on first order
   </span>
 {% endif %}
 {%- if has_volume_pricing -%}
