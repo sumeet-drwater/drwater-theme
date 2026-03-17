@@ -15,7 +15,8 @@
          url('./Anatoleum.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
+    /* [2026-03-17] Speed fix: add font-display:swap to unblock FCP by ~40ms */
+    font-display: swap;
 }
 @font-face {
     font-family: 'JUST-Sans-Regular';
