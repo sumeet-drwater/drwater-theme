@@ -1,0 +1,97 @@
+{%- doc -%}
+  Intended for use in a block similar to the button block.
+
+  @param {string} link - link to render
+  @param {object} [block] - The block
+
+  @example
+  {% render 'button', link: '/collections/all' %}
+{%- enddoc -%}
+
+{% assign block_settings = block.settings %}
+
+<a
+  {% if link == blank %}
+    role="link"
+    aria-disabled="true"
+  {% else %}
+    href="{{ link }}"
+  {% endif %}
+  class="
+  {%  if block_settings.add_border_radius %}
+{{ block.id }}-btn-border-radius
+  {% endif %}
+     {%  if block_settings.show_button_arrow %}
+{{ block.id }}-btn-with-arrow color-{{ block_settings.arrow_color }}
+  {% endif %}
+    size-style
+    {{ block_settings.style_class }}
+    {{ block_settings.style_class }}--{{ block.id }}
+  "
+  style="{% render 'size-style', settings: block_settings %}"
+  {%- if block_settings.open_in_new_tab -%}
+    target="_blank"
+    rel="noopener noreferrer"
+  {%- endif -%}
+  {{ block.shopify_attributes }}
+>
+  {{ block_settings.label }}
+
+  {% if block_settings.show_button_arrow %}
+    <span class="btn-arrow">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10" fill="none">
+<path d="M4.37124e-07 4.99988C4.48716e-07 4.86728 0.0526768 4.74011 0.146442 4.64634C0.240207 4.55258 0.36738 4.4999 0.499984 4.4999L10.2928 4.4999L6.64603 0.853771C6.59958 0.807317 6.56273 0.752168 6.53759 0.691473C6.51245 0.630779 6.49951 0.565727 6.49951 0.500032C6.49951 0.434337 6.51245 0.369285 6.53759 0.30859C6.56273 0.247896 6.59958 0.192747 6.64603 0.146293C6.69249 0.0998396 6.74763 0.0629914 6.80833 0.0378509C6.86902 0.0127104 6.93408 -0.000230278 6.99977 -0.000230273C7.06547 -0.000230267 7.13052 0.0127104 7.19121 0.0378509C7.25191 0.0629914 7.30706 0.0998396 7.35351 0.146293L11.8534 4.64615C11.8998 4.69258 11.9367 4.74772 11.9619 4.80842C11.987 4.86912 12 4.93418 12 4.99989C12 5.06559 11.987 5.13065 11.9619 5.19135C11.9367 5.25205 11.8998 5.30719 11.8534 5.35362L7.35351 9.85348C7.25969 9.94729 7.13245 10 6.99977 10C6.86709 10 6.73985 9.94729 6.64603 9.85348C6.55221 9.75966 6.49951 9.63242 6.49951 9.49974C6.49951 9.36706 6.55221 9.23982 6.64603 9.146L10.2928 5.49987L0.499984 5.49987C0.36738 5.49987 0.240207 5.44719 0.146442 5.35343C0.0526768 5.25966 4.25531e-07 5.13249 4.37124e-07 4.99988Z" fill="currentColor"/>
+</svg>
+</span>
+{% endif %}
+</a>
+
+{% stylesheet %}
+  .link {
+    text-decoration: none;
+    text-decoration-color: currentcolor;
+
+    &:hover {
+      color: var(--color-primary-hover);
+      text-decoration-color: transparent;
+    }
+  }
+{% endstylesheet %}
+{% style %}
+  .{{ block.id }}-btn-border-radius{
+    border-radius:{{ block_settings.border_radius }}px;
+  }
+
+  .{{ block.id }}-btn-with-arrow {
+display: flex;
+    align-items: center;
+    gap: 12px;
+        padding-block: 6px;
+    padding-right: 6px;
+    White-space:nowrap;
+
+  }
+ .{{ block.id }}-btn-with-arrow .btn-arrow {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 28px;
+
+}
+
+ .{{ block.id }}-btn-with-arrow.color-blue .btn-arrow{
+    background: var(--blue);
+    color: #ffffff;
+    
+ }
+ 
+ .{{ block.id }}-btn-with-arrow.color-white .btn-arrow{
+    color: var(--blue);
+    background: #ffffff;
+ }
+ .{{ block.id }}-btn-with-arrow.color-blue:hover .btn-arrow{
+  background: #222222;
+ }
+{% endstyle %}

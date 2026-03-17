@@ -1,0 +1,348 @@
+{% comment %}
+------------------------------------------------------------------------------
+WHY DR.WATER SECTION
+Responsive two-column layout with blur overlay image card
+------------------------------------------------------------------------------
+{% endcomment %}
+
+<section class="drwater-section">
+  <div class="drwater-container">
+    <!-- LEFT SIDE -->
+    <div class="drwater-left">
+      {% if section.settings.tag_label != blank %}
+        <div class="drwater-tag">{{ section.settings.tag_label }}</div>
+        
+      {% endif %}
+<br>
+      {% if section.settings.heading != blank %}
+        <h2 class="drwater-heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.subheading != blank %}
+        <h4 class="drwater-subheading">{{ section.settings.subheading }}</h4>
+      {% endif %}
+
+      {% if section.settings.text != blank %}
+        <p class="drwater-text">{{ section.settings.text }}</p>
+      {% endif %}
+
+      <!-- Logos -->
+      {% if section.blocks.size > 0 %}
+        <div class="drwater-logos">
+          {% for block in section.blocks %}
+            {% if block.type == 'logo' %}
+              <img src="{{ block.settings.logo | img_url: 'master' }}" alt="Certification Logo" />
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Benefit Tags -->
+      <div class="drwater-tags">
+        {% for block in section.blocks %}
+          {% if block.type == 'tag' %}
+            <span>{{ block.settings.tag_text }}</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Button -->
+      {% if section.settings.button_text != blank %}
+        <a href="{{ section.settings.button_link }}" class="drwater-btn">{{ section.settings.button_text }}</a>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="drwater-right">
+      <div class="drwater-img-wrap">
+        {% if section.settings.main_image != blank %}
+          <img src="{{ section.settings.main_image | img_url: 'master' }}" alt="Dr.Water Bottle" class="drwater-main-img">
+        {% endif %}
+
+        {% if section.settings.overlay_image != blank %}
+          <div class="drwater-overlay">
+            <img src="{{ section.settings.overlay_image | img_url: 'master' }}" alt="Bubbles" class="drwater-bubble-img">
+            {% if section.settings.overlay_text != blank %}
+              <p class="drwater-overlay-text">{{ section.settings.overlay_text }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.drwater-section {
+  padding: 80px 40px;
+  background: #fff;
+  font-family: "JUST Sans", sans-serif;
+}
+
+.drwater-container {
+  max-width: 1400px;
+  margin: 50px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* LEFT CONTENT */
+.drwater-left {
+  flex: 1 1 48%;
+  text-align: left;
+}
+
+.drwater-tag {
+  display: inline-block;
+  background: #002366;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 25px;
+  margin-bottom: 20px;
+}
+
+.drwater-heading {
+  font-size: 42px;
+  font-weight: 700;
+  color: #001a33;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.drwater-subheading {
+  font-size: 20px;
+  text-transform: uppercase;
+  color: #001a33;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.drwater-text {
+  color: #001a33;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+/* Logos Row */
+.drwater-logos {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.drwater-logos img {
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Benefit Tags */
+.drwater-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 35px;
+}
+
+.drwater-tags span {
+  background: #eef2f6;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #002366;
+  font-weight: 500;
+}
+
+/* Button */
+.drwater-btn {
+  background: #001a33;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.drwater-btn:hover {
+  background: #0033a0;
+}
+
+/* RIGHT IMAGE */
+.drwater-right {
+  flex: 1 1 48%;
+  position: relative;
+}
+
+.drwater-img-wrap {
+  position: relative;
+}
+
+.drwater-main-img {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.drwater-overlay {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px);
+  padding: 12px 18px;
+  border-radius: 10px;
+  width: 260px;
+  text-align: left;
+}
+
+.drwater-bubble-img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+.drwater-overlay-text {
+  font-size: 14px;
+  color: #001a33;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* RESPONSIVE TABLET ADJUSTMENTS */
+@media (max-width: 992px) {
+  .drwater-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .drwater-left,
+  .drwater-right {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+  .drwater-heading {
+    font-size: 34px;
+  }
+  .drwater-text {
+    font-size: 16px;
+  }
+  .drwater-tags {
+    justify-content: center;
+  }
+  .drwater-logos {
+    justify-content: center;
+  }
+  .drwater-overlay {
+    position: relative;
+    width: 90%;
+    margin: 20px auto 0;
+  }
+  .drwater-bubble-img {
+    margin-bottom: 10px;
+  }
+}
+
+/* HIDE SECTION ON MOBILE */
+@media (max-width: 768px) {
+  .drwater-section {
+    display: none !important;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Why Dr.Water Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tag_label",
+      "label": "Top Tag Label",
+      "default": "Why Dr.Water"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main Heading",
+      "default": "Third-Party Certified & FDA-Compliant"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Potential Benefits"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Description",
+      "default": "of drinking hydrogen water up to 4 weeks. There have been significant benefits of using hydrogen water for a continuous cycle of 4 weeks."
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Main Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "overlay_image",
+      "label": "Overlay Image"
+    },
+    {
+      "type": "text",
+      "id": "overlay_text",
+      "label": "Overlay Caption",
+      "default": "Utilizing cutting-edge SPE and PEM technologies for efficiency"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Learn More →"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Certification Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Upload Logo"
+        }
+      ]
+    },
+    {
+      "type": "tag",
+      "name": "Benefit Tag",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tag_text",
+          "label": "Tag Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why Dr.Water Section",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

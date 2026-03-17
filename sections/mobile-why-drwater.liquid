@@ -1,0 +1,213 @@
+{% comment %}
+------------------------------------------------------------------------------
+WHY DR.WATER - MOBILE ONLY SECTION
+Visible only on mobile (<769px)
+------------------------------------------------------------------------------
+{% endcomment %}
+
+<section class="drwater-mobile">
+  <!-- Top Heading -->
+  {% if section.settings.main_heading != blank %}
+    <h2 class="drwater-m-heading">{{ section.settings.main_heading }}</h2>
+  {% endif %}
+
+  <!-- Bottle Image -->
+  <div class="drwater-m-image">
+    {% if section.settings.bottle_image != blank %}
+      <img src="{{ section.settings.bottle_image | img_url: 'master' }}" alt="Dr.Water Bottle">
+    {% endif %}
+
+    <!-- Floating Tags -->
+    {% for block in section.blocks %}
+      {% if block.type == 'tag' %}
+        <div class="drwater-tag {{ block.settings.position }}">
+          {{ block.settings.text }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Subheading -->
+  {% if section.settings.sub_heading != blank %}
+    <h3 class="drwater-m-subheading">{{ section.settings.sub_heading }}</h3>
+  {% endif %}
+
+  <!-- Logos -->
+  <div class="drwater-m-logos">
+    {% for block in section.blocks %}
+      {% if block.type == 'logo' and block.settings.logo_image != blank %}
+        <img src="{{ block.settings.logo_image | img_url: 'master' }}" alt="Logo">
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+/* ===== MOBILE ONLY SECTION ===== */
+.drwater-mobile {
+  display: block;
+  background: #fff;
+  padding: 0px 20px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+/* Headings */
+.drwater-m-heading {color: #041d60;
+text-align: center;
+font-family: sans-serif;
+font-size: 24px;
+font-style: normal;
+font-weight: 500;
+line-height: var(--font-size-40, 40px); /* 117.647% */
+text-transform: capitalize;
+  margin-bottom: 20px;
+  text-transform: capitalize;
+          font-family: var(--font-body);
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 34px;
+        leading-trim: NONE;
+        line-height: 40px;
+        letter-spacing: 0px;
+        text-align: center;
+        color: rgba(4, 29, 96, 1);
+}
+.drwater-m-subheading {
+ margin-bottom: 10px;
+    color: #2e4cb2;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  padding-bottom: 0px;
+}
+
+/* Bottle Image */
+.drwater-m-image {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto 16px;
+}
+.drwater-m-image img {
+  width: 100%;
+  border-radius: 14px;
+  display: block;
+}
+
+/* Floating Tags */
+.drwater-tag {
+  position: absolute;
+  background: #fff;
+  border-radius: 20px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #001a33;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  white-space: nowrap;
+}
+
+/* Default Tag Positions (Editable via block settings if needed) */
+.top-right { top: 10%; right: 10%; }
+.mid-left { top: 30%; left: -10%; }
+.mid-right { top: 45%; right: 8%; }
+.bottom-left { bottom: 15%; left: -8%; }
+
+/* Logos */
+.drwater-m-logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding-top: 20px;
+}
+.drwater-m-logos img {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  filter: grayscale(10%);
+}
+
+/* Hide on Desktop / Tablet */
+@media (min-width: 769px) {
+  .drwater-mobile {
+    display: none !important;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Why Dr.Water (Mobile)",
+  "settings": [
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main Heading",
+      "default": "Why Dr.Water"
+    },
+    {
+      "type": "image_picker",
+      "id": "bottle_image",
+      "label": "Bottle Image"
+    },
+    {
+      "type": "text",
+      "id": "sub_heading",
+      "label": "Subheading",
+      "default": "Third-Party Certified & FDA-Compliant"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tag",
+      "name": "Floating Tag",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Tag Text",
+          "default": "Boost Daily Performance"
+        },
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Tag Position",
+          "default": "top-right",
+          "options": [
+            { "value": "top-right", "label": "Top Right" },
+            { "value": "mid-left", "label": "Middle Left" },
+            { "value": "mid-right", "label": "Middle Right" },
+            { "value": "bottom-left", "label": "Bottom Left" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "logo",
+      "name": "Certification Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo_image",
+          "label": "Upload Logo"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why Dr.Water (Mobile)",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

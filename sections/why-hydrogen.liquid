@@ -1,0 +1,539 @@
+{% comment %}
+  DRW - Why Hydrogen (ONE FILE)
+  Fix: removed dynamic section.settings["benefit_" | append ...]
+{% endcomment %}
+
+<section class="drw-wh" data-section="drw-why-hydrogen" data-faq-single="true">
+  <div class="drw-wh__hero">
+    <div class="drw-wh__hero-bg" aria-hidden="true">
+      <svg class="drw-wh__pattern" viewBox="0 0 1200 700" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <radialGradient id="drwGlow" cx="70%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="currentColor" stop-opacity="0.18"/>
+            <stop offset="55%" stop-color="currentColor" stop-opacity="0.06"/>
+            <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="drwWave" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="currentColor" stop-opacity="0.16"/>
+            <stop offset="100%" stop-color="currentColor" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+
+        <rect width="1200" height="700" fill="url(#drwGlow)"></rect>
+        <path d="M0,520 C220,470 360,610 560,560 C760,510 880,410 1200,460 L1200,700 L0,700 Z"
+              fill="url(#drwWave)"></path>
+
+        {% for i in (1..22) %}
+          {% assign x = i | times: 47 | modulo: 1200 %}
+          {% assign y = i | times: 31 | modulo: 700 %}
+          <circle cx="{{ x }}" cy="{{ y }}" r="4" fill="currentColor" fill-opacity="0.06"></circle>
+          <circle cx="{{ x | plus: 18 }}" cy="{{ y | plus: 52 }}" r="2.5" fill="currentColor" fill-opacity="0.05"></circle>
+        {% endfor %}
+      </svg>
+    </div>
+
+    <div class="drw-wh__container">
+      <div class="drw-wh__hero-grid">
+        <div class="drw-wh__hero-copy">
+          {% if section.settings.eyebrow != blank %}
+            <div class="drw-wh__eyebrow">{{ section.settings.eyebrow }}</div>
+          {% endif %}
+
+          <h1 class="drw-wh__h1">{{ section.settings.heading }}</h1>
+
+          {% if section.settings.subheading != blank %}
+            <p class="drw-wh__sub">{{ section.settings.subheading }}</p>
+          {% endif %}
+
+          <div class="drw-wh__cta-row">
+            {% if section.settings.primary_cta_label != blank and section.settings.primary_cta_link != blank %}
+              <a class="drw-btn drw-btn--primary" href="{{ section.settings.primary_cta_link }}">
+                {{ section.settings.primary_cta_label }}
+              </a>
+            {% endif %}
+            {% if section.settings.secondary_cta_label != blank and section.settings.secondary_cta_link != blank %}
+              <a class="drw-btn drw-btn--ghost" href="{{ section.settings.secondary_cta_link }}">
+                {{ section.settings.secondary_cta_label }}
+              </a>
+            {% endif %}
+          </div>
+
+          {% if section.settings.ppm_note != blank %}
+            <div class="drw-wh__note">
+              <span class="drw-wh__note-dot" aria-hidden="true"></span>
+              <span>{{ section.settings.ppm_note }}</span>
+            </div>
+          {% endif %}
+
+          {% if section.settings.trust_line != blank %}
+            <div class="drw-wh__trust">{{ section.settings.trust_line }}</div>
+          {% endif %}
+        </div>
+
+        <div class="drw-wh__hero-card">
+          <div class="drw-wh__hero-card-inner">
+            <div class="drw-wh__hero-kicker">{{ section.settings.hero_card_kicker }}</div>
+
+            <div class="drw-wh__hero-stack">
+              <div class="drw-chip">
+                <span class="drw-chip__label">{{ section.settings.hero_chip_1_label }}</span>
+                <span class="drw-chip__value">{{ section.settings.hero_chip_1_value }}</span>
+              </div>
+              <div class="drw-chip">
+                <span class="drw-chip__label">{{ section.settings.hero_chip_2_label }}</span>
+                <span class="drw-chip__value">{{ section.settings.hero_chip_2_value }}</span>
+              </div>
+              <div class="drw-chip drw-chip--soft">
+                <span class="drw-chip__label">{{ section.settings.hero_chip_3_label }}</span>
+                <span class="drw-chip__value">{{ section.settings.hero_chip_3_value }}</span>
+              </div>
+            </div>
+
+            <div class="drw-wh__hero-mini">
+              <div class="drw-wh__hero-mini-title">{{ section.settings.hero_mini_title }}</div>
+              <div class="drw-wh__hero-mini-body">{{ section.settings.hero_mini_body }}</div>
+            </div>
+
+            <div class="drw-wh__hero-bubbles" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drw-wh__container">
+    <div class="drw-wh__section">
+      <div class="drw-wh__section-head">
+        <h2 class="drw-wh__h2">{{ section.settings.benefits_heading }}</h2>
+        <p class="drw-wh__p">{{ section.settings.benefits_subheading }}</p>
+      </div>
+
+      {% capture icon_shield %}
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2.5l7 3.4v6.3c0 5.1-3 8.8-7 9.9-4-1.1-7-4.8-7-9.9V5.9l7-3.4z" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M8.2 12.2l2.2 2.2 5.4-5.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      {% endcapture %}
+      {% capture icon_bolt %}
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M13 2L4.8 13.2H11l-1 8.8L19.2 10.8H13L13 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+      {% endcapture %}
+      {% capture icon_spark %}
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2l1.4 5.1L19 8.5l-5.6 1.4L12 15.5l-1.4-5.6L5 8.5l5.6-1.4L12 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+      {% endcapture %}
+      {% capture icon_gut %}
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 7.5c0-2.5 2-4.5 4.6-4.5 2.6 0 4.6 2 4.6 4.5 0 2-1.3 3.2-2.7 4.3-1 .8-1.9 1.6-1.9 2.7 0 1.2 1 2 2.2 2 1.2 0 2.2-1 2.2-2.2V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M8 7.5v7.2c0 1.9 1.5 3.3 3.4 3.3 1.5 0 2.6 1.2 2.6 2.6v.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      {% endcapture %}
+
+      <div class="drw-wh__benefits">
+        {% assign b1 = section.settings.benefit_1_points | split: "|" %}
+        <div class="drw-card">
+          <div class="drw-card__top">
+            <div class="drw-ico" aria-hidden="true">{{ icon_shield }}</div>
+            <div class="drw-card__title">{{ section.settings.benefit_1_title }}</div>
+          </div>
+          <ul class="drw-card__list">
+            {% for item in b1 %}
+              {% assign it = item | strip %}
+              {% if it != blank %}<li>{{ it }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+
+        {% assign b2 = section.settings.benefit_2_points | split: "|" %}
+        <div class="drw-card">
+          <div class="drw-card__top">
+            <div class="drw-ico" aria-hidden="true">{{ icon_bolt }}</div>
+            <div class="drw-card__title">{{ section.settings.benefit_2_title }}</div>
+          </div>
+          <ul class="drw-card__list">
+            {% for item in b2 %}
+              {% assign it = item | strip %}
+              {% if it != blank %}<li>{{ it }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+
+        {% assign b3 = section.settings.benefit_3_points | split: "|" %}
+        <div class="drw-card">
+          <div class="drw-card__top">
+            <div class="drw-ico" aria-hidden="true">{{ icon_spark }}</div>
+            <div class="drw-card__title">{{ section.settings.benefit_3_title }}</div>
+          </div>
+          <ul class="drw-card__list">
+            {% for item in b3 %}
+              {% assign it = item | strip %}
+              {% if it != blank %}<li>{{ it }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+
+        {% assign b4 = section.settings.benefit_4_points | split: "|" %}
+        <div class="drw-card">
+          <div class="drw-card__top">
+            <div class="drw-ico" aria-hidden="true">{{ icon_gut }}</div>
+            <div class="drw-card__title">{{ section.settings.benefit_4_title }}</div>
+          </div>
+          <ul class="drw-card__list">
+            {% for item in b4 %}
+              {% assign it = item | strip %}
+              {% if it != blank %}<li>{{ it }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {% if section.settings.show_science_block %}
+      <div class="drw-wh__science">
+        <div class="drw-wh__science-left">
+          <div class="drw-wh__badge">{{ section.settings.science_badge }}</div>
+          <h2 class="drw-wh__h2">{{ section.settings.science_heading }}</h2>
+          <p class="drw-wh__p">{{ section.settings.science_body }}</p>
+          <div class="drw-wh__disclaimer">{{ section.settings.science_disclaimer }}</div>
+        </div>
+
+        <div class="drw-wh__science-right">
+          <div class="drw-wh__science-card">
+            <div class="drw-wh__science-card-title">{{ section.settings.glossary_title }}</div>
+            <div class="drw-wh__gloss">
+              <div class="drw-wh__gloss-row">
+                <div class="drw-wh__gloss-term">H₂</div>
+                <div class="drw-wh__gloss-def">{{ section.settings.gloss_h2 }}</div>
+              </div>
+              <div class="drw-wh__gloss-row">
+                <div class="drw-wh__gloss-term">PPM</div>
+                <div class="drw-wh__gloss-def">{{ section.settings.gloss_ppm }}</div>
+              </div>
+              <div class="drw-wh__gloss-row">
+                <div class="drw-wh__gloss-term">Cycle</div>
+                <div class="drw-wh__gloss-def">{{ section.settings.gloss_cycle }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="drw-wh__science-card drw-wh__science-card--soft">
+            <div class="drw-wh__science-card-title">{{ section.settings.takeaway_title }}</div>
+            <div class="drw-wh__science-card-body">{{ section.settings.takeaway_body }}</div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="drw-wh__faq">
+      <div class="drw-wh__section-head">
+        <h2 class="drw-wh__h2">{{ section.settings.faq_heading }}</h2>
+        <p class="drw-wh__p">{{ section.settings.faq_subheading }}</p>
+      </div>
+
+      {% assign faq_lines = section.settings.faq_items | split: "\n" %}
+      <div class="drw-acc" data-accordion>
+        {% for line in faq_lines %}
+          {% assign parts = line | split: "|" %}
+          {% assign q = parts[0] | strip %}
+          {% assign a = parts[1] | strip %}
+          {% if q != blank and a != blank %}
+            <details class="drw-acc__item">
+              <summary class="drw-acc__summary">
+                <span>{{ q }}</span>
+                <span class="drw-acc__icon" aria-hidden="true"></span>
+              </summary>
+              <div class="drw-acc__content">
+                <p>{{ a }}</p>
+              </div>
+            </details>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="drw-wh__bottom-cta">
+      <div class="drw-wh__bottom-cta-inner">
+        <div>
+          <h2 class="drw-wh__h2">{{ section.settings.bottom_cta_heading }}</h2>
+          <p class="drw-wh__p">{{ section.settings.bottom_cta_body }}</p>
+        </div>
+        {% if section.settings.bottom_cta_label != blank and section.settings.bottom_cta_link != blank %}
+          <a class="drw-btn drw-btn--primary" href="{{ section.settings.bottom_cta_link }}">
+            {{ section.settings.bottom_cta_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Styles (same as earlier, unchanged) -->
+  <style>
+    .drw-wh{
+      --drw-border: rgba(255,255,255,0.12);
+      --drw-text: rgba(255,255,255,0.92);
+      --drw-muted: rgba(255,255,255,0.72);
+      --drw-soft: rgba(255,255,255,0.55);
+      --drw-accent: #66d6ff;
+      --drw-radius: 18px;
+      color: var(--drw-text);
+    }
+    .drw-wh__hero{
+      position: relative;
+      background: radial-gradient(1200px 700px at 70% 20%, rgba(102,214,255,0.16), transparent 55%),
+                  linear-gradient(180deg, #061021, #050b14);
+      overflow: hidden;
+    }
+    .drw-wh__hero-bg{
+      position: absolute; inset: 0; opacity: 0.9;
+      color: rgba(102,214,255,0.6);
+      pointer-events: none;
+    }
+    .drw-wh__pattern{ width: 100%; height: 100%; display:block; }
+    .drw-wh__container{ width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    .drw-wh__hero-grid{
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px; padding: 72px 0 44px;
+    }
+    .drw-wh__eyebrow{
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border: 1px solid var(--drw-border);
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px; font-size: 12px;
+      letter-spacing: 0.16em; color: var(--drw-muted);
+    }
+    .drw-wh__h1{
+      margin: 14px 0 10px;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 1.05; letter-spacing: -0.02em;
+    }
+    .drw-wh__sub{ margin: 0 0 18px; font-size: 16px; line-height: 1.55; color: var(--drw-muted); max-width: 56ch; }
+    .drw-wh__cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin:12px 0 12px; }
+    .drw-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:12px 16px; border-radius:12px;
+      border:1px solid var(--drw-border);
+      text-decoration:none; font-weight:600; font-size:14px; line-height:1;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+      will-change: transform;
+      color: var(--drw-text);
+    }
+    .drw-btn:hover{ transform: translateY(-1px); }
+    .drw-btn--primary{ background: rgba(102,214,255,0.14); border-color: rgba(102,214,255,0.35); }
+    .drw-btn--ghost{ background: rgba(255,255,255,0.03); }
+    .drw-wh__note{ display:flex; align-items:center; gap:10px; margin-top:10px; color: var(--drw-soft); font-size:13px; }
+    .drw-wh__note-dot{ width:8px; height:8px; border-radius:999px; background: var(--drw-accent); box-shadow: 0 0 0 6px rgba(102,214,255,0.10); }
+    .drw-wh__trust{ margin-top:16px; font-size:13px; color: var(--drw-muted); }
+    .drw-wh__hero-card{
+      align-self: start; border-radius: var(--drw-radius);
+      border: 1px solid var(--drw-border);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+    .drw-wh__hero-card-inner{ position:relative; padding:18px; }
+    .drw-wh__hero-kicker{ font-size:12px; letter-spacing:0.14em; color: var(--drw-muted); margin-bottom:12px; }
+    .drw-wh__hero-stack{ display:grid; gap:10px; margin-bottom:14px; }
+    .drw-chip{
+      display:flex; justify-content:space-between; gap:12px;
+      padding:12px; border-radius:14px;
+      border:1px solid var(--drw-border);
+      background: rgba(0,0,0,0.18);
+    }
+    .drw-chip--soft{ background: rgba(102,214,255,0.08); border-color: rgba(102,214,255,0.25); }
+    .drw-chip__label{ color: var(--drw-muted); font-size:13px; }
+    .drw-chip__value{ font-weight:700; font-size:13px; }
+    .drw-wh__hero-mini{ border-top:1px solid rgba(255,255,255,0.10); padding-top:14px; margin-top:10px; }
+    .drw-wh__hero-mini-title{ font-weight:700; font-size:13px; margin-bottom:6px; }
+    .drw-wh__hero-mini-body{ color: var(--drw-muted); font-size:13px; line-height:1.5; }
+    .drw-wh__hero-bubbles{
+      position:absolute; inset:-40px -40px auto auto;
+      width:220px; height:220px; border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, rgba(102,214,255,0.22), transparent 55%),
+                  radial-gradient(circle at 70% 70%, rgba(255,255,255,0.10), transparent 55%);
+      filter: blur(1px); opacity:0.9; pointer-events:none;
+    }
+    .drw-wh__section{ padding: 44px 0 18px; }
+    .drw-wh__section-head{ margin-bottom:18px; }
+    .drw-wh__h2{ font-size: clamp(22px, 2.2vw, 30px); line-height: 1.15; margin: 0 0 8px; letter-spacing: -0.01em; color: var(--drw-text); }
+    .drw-wh__p{ margin:0; color: var(--drw-muted); line-height:1.6; max-width:70ch; }
+    .drw-wh__benefits{ display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; margin-top:16px; }
+    .drw-card{ border: 1px solid var(--drw-border); background: rgba(255,255,255,0.04); border-radius: var(--drw-radius); padding:16px; min-height:160px; }
+    .drw-card__top{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .drw-ico{
+      width:38px; height:38px; border-radius:12px;
+      border:1px solid rgba(102,214,255,0.25);
+      background: rgba(102,214,255,0.10);
+      display:flex; align-items:center; justify-content:center;
+      color: rgba(255,255,255,0.92);
+    }
+    .drw-ico svg{ width:22px; height:22px; }
+    .drw-card__title{ font-weight:800; font-size:14px; }
+    .drw-card__list{ margin:0; padding-left:18px; color: var(--drw-muted); line-height:1.55; font-size:13px; }
+    .drw-card__list li{ margin: 6px 0; }
+    .drw-wh__science{
+      margin: 28px 0 10px; padding: 22px;
+      border-radius: calc(var(--drw-radius) + 4px);
+      border: 1px solid var(--drw-border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px;
+    }
+    .drw-wh__badge{
+      display:inline-flex; padding:7px 10px;
+      border:1px solid rgba(102,214,255,0.30);
+      border-radius:999px; color: rgba(255,255,255,0.85);
+      background: rgba(102,214,255,0.10);
+      font-size:12px; letter-spacing:0.12em; margin-bottom:10px;
+    }
+    .drw-wh__disclaimer{ margin-top:14px; color: var(--drw-soft); font-size:12.5px; line-height:1.55; }
+    .drw-wh__science-card{
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.16);
+      border-radius: var(--drw-radius);
+      padding:16px;
+    }
+    .drw-wh__science-card--soft{ background: rgba(102,214,255,0.08); border-color: rgba(102,214,255,0.22); margin-top:12px; }
+    .drw-wh__science-card-title{ font-weight:800; font-size:14px; margin-bottom:10px; }
+    .drw-wh__science-card-body{ color: var(--drw-muted); line-height:1.6; font-size:13px; }
+    .drw-wh__gloss{ display:grid; gap:10px; }
+    .drw-wh__gloss-row{ display:grid; grid-template-columns:56px 1fr; gap:10px; align-items:start; }
+    .drw-wh__gloss-term{ font-weight:900; color: rgba(255,255,255,0.90); }
+    .drw-wh__gloss-def{ color: var(--drw-muted); line-height:1.5; font-size:13px; }
+    .drw-wh__faq{ padding: 34px 0 10px; }
+    .drw-acc{ border:1px solid var(--drw-border); background: rgba(255,255,255,0.02); border-radius: calc(var(--drw-radius) + 4px); overflow:hidden; }
+    .drw-acc__item{ border-top:1px solid rgba(255,255,255,0.10); padding:0; }
+    .drw-acc__item:first-child{ border-top:0; }
+    .drw-acc__summary{
+      list-style:none; cursor:pointer;
+      padding:16px; display:flex; align-items:center; justify-content:space-between;
+      gap:14px; font-weight:750;
+    }
+    .drw-acc__summary::-webkit-details-marker{ display:none; }
+    .drw-acc__icon{
+      width:10px; height:10px;
+      border-right:2px solid rgba(255,255,255,0.75);
+      border-bottom:2px solid rgba(255,255,255,0.75);
+      transform: rotate(45deg);
+      transition: transform 160ms ease;
+      margin-right:4px;
+      flex: 0 0 auto;
+    }
+    details[open] .drw-acc__icon{ transform: rotate(-135deg); }
+    .drw-acc__content{ padding: 0 16px 16px; color: var(--drw-muted); line-height:1.65; font-size:14px; }
+    .drw-wh__bottom-cta{ padding: 34px 0 64px; }
+    .drw-wh__bottom-cta-inner{
+      border:1px solid rgba(102,214,255,0.22);
+      background: rgba(102,214,255,0.08);
+      border-radius: calc(var(--drw-radius) + 6px);
+      padding:22px;
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    @media (max-width: 980px){
+      .drw-wh__hero-grid{ grid-template-columns: 1fr; padding: 54px 0 34px; }
+      .drw-wh__benefits{ grid-template-columns: repeat(2, 1fr); }
+      .drw-wh__science{ grid-template-columns: 1fr; }
+      .drw-wh__bottom-cta-inner{ flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 560px){
+      .drw-wh__container{ width: min(1120px, calc(100% - 28px)); }
+      .drw-wh__benefits{ grid-template-columns: 1fr; }
+      .drw-btn{ width: 100%; }
+      .drw-wh__cta-row{ gap: 10px; }
+    }
+  </style>
+
+  <script>
+    (function() {
+      var root = document.currentScript && document.currentScript.closest('[data-section="drw-why-hydrogen"]');
+      if (!root) return;
+
+      var single = root.getAttribute('data-faq-single') === 'true';
+      if (!single) return;
+
+      var items = root.querySelectorAll('.drw-acc details');
+      items.forEach(function(d) {
+        d.addEventListener('toggle', function() {
+          if (!d.open) return;
+          items.forEach(function(other) { if (other !== d) other.open = false; });
+        });
+      });
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "DRW - Why Hydrogen",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "WHY HYDROGEN" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Hydrogen water, explained simply" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Regular water with extra dissolved molecular hydrogen (H₂). Same water. Different gas." },
+
+    { "type": "text", "id": "primary_cta_label", "label": "Primary CTA label", "default": "Shop Hydrogen Products" },
+    { "type": "url", "id": "primary_cta_link", "label": "Primary CTA link" },
+    { "type": "text", "id": "secondary_cta_label", "label": "Secondary CTA label", "default": "See lab results" },
+    { "type": "url", "id": "secondary_cta_link", "label": "Secondary CTA link" },
+
+    { "type": "text", "id": "ppm_note", "label": "Small note", "default": "Tip: hydrogen concentration is often shown as PPM (parts per million)." },
+    { "type": "text", "id": "trust_line", "label": "Trust line", "default": "Designed for everyday use. Built for real life." },
+
+    { "type": "header", "content": "Hero card" },
+    { "type": "text", "id": "hero_card_kicker", "label": "Hero card kicker", "default": "What you’re drinking" },
+    { "type": "text", "id": "hero_chip_1_label", "label": "Chip 1 label", "default": "Water" },
+    { "type": "text", "id": "hero_chip_1_value", "label": "Chip 1 value", "default": "H₂O" },
+    { "type": "text", "id": "hero_chip_2_label", "label": "Chip 2 label", "default": "Added gas" },
+    { "type": "text", "id": "hero_chip_2_value", "label": "Chip 2 value", "default": "H₂" },
+    { "type": "text", "id": "hero_chip_3_label", "label": "Chip 3 label", "default": "Result" },
+    { "type": "text", "id": "hero_chip_3_value", "label": "Chip 3 value", "default": "Hydrogen-rich water" },
+    { "type": "text", "id": "hero_mini_title", "label": "Mini title", "default": "Simple mental model" },
+    { "type": "textarea", "id": "hero_mini_body", "label": "Mini body", "default": "Think “sparkling water”, but instead of CO₂, it’s H₂ (molecular hydrogen)." },
+
+    { "type": "header", "content": "Benefits" },
+    { "type": "text", "id": "benefits_heading", "label": "Benefits heading", "default": "Why people add hydrogen" },
+    { "type": "textarea", "id": "benefits_subheading", "label": "Benefits subheading", "default": "Not magic. Not a shortcut. More like a small upgrade you repeat daily." },
+
+    { "type": "text", "id": "benefit_1_title", "label": "Benefit 1 title", "default": "Reduce oxidative stress" },
+    { "type": "text", "id": "benefit_1_points", "label": "Benefit 1 points (use |)", "default": "Recovery support|Everyday fatigue support|Post workout routine" },
+
+    { "type": "text", "id": "benefit_2_title", "label": "Benefit 2 title", "default": "Support energy metabolism" },
+    { "type": "text", "id": "benefit_2_points", "label": "Benefit 2 points (use |)", "default": "Cellular energy support|Mitochondria focus|Performance routine" },
+
+    { "type": "text", "id": "benefit_3_title", "label": "Benefit 3 title", "default": "Support healthy aging" },
+    { "type": "text", "id": "benefit_3_points", "label": "Benefit 3 points (use |)", "default": "Skin and vitality support|Daily longevity habits|Consistent hydration" },
+
+    { "type": "text", "id": "benefit_4_title", "label": "Benefit 4 title", "default": "Support gut comfort" },
+    { "type": "text", "id": "benefit_4_points", "label": "Benefit 4 points (use |)", "default": "Daily hydration routine|Digestion friendly habits|Microbiome support" },
+
+    { "type": "header", "content": "Science block" },
+    { "type": "checkbox", "id": "show_science_block", "label": "Show science block", "default": true },
+    { "type": "text", "id": "science_badge", "label": "Science badge", "default": "SCIENCE, WITHOUT THE FLUFF" },
+    { "type": "text", "id": "science_heading", "label": "Science heading", "default": "What makes molecular hydrogen interesting?" },
+    { "type": "textarea", "id": "science_body", "label": "Science body", "default": "Molecular hydrogen is being studied for its potential to support the body’s antioxidant defenses and recovery systems. The research is evolving, and results vary, but the mechanism that gets attention is how H₂ may help the body handle oxidative stress without shutting down normal signaling." },
+    { "type": "text", "id": "science_disclaimer", "label": "Science disclaimer", "default": "Educational info only. Not medical advice. Results vary person to person." },
+
+    { "type": "text", "id": "glossary_title", "label": "Glossary title", "default": "Quick glossary" },
+    { "type": "text", "id": "gloss_h2", "label": "H2 definition", "default": "Molecular hydrogen gas dissolved in water" },
+    { "type": "text", "id": "gloss_ppm", "label": "PPM definition", "default": "Parts per million, a concentration measure" },
+    { "type": "text", "id": "gloss_cycle", "label": "Cycle definition", "default": "Time a device runs to infuse H₂" },
+
+    { "type": "text", "id": "takeaway_title", "label": "Takeaway title", "default": "What to do with this" },
+    { "type": "textarea", "id": "takeaway_body", "label": "Takeaway body", "default": "Pick a product you’ll actually use daily. Consistency beats “best specs”." },
+
+    { "type": "header", "content": "FAQ" },
+    { "type": "text", "id": "faq_heading", "label": "FAQ heading", "default": "FAQs" },
+    { "type": "text", "id": "faq_subheading", "label": "FAQ subheading", "default": "Clear answers, no weird claims." },
+    { "type": "textarea", "id": "faq_items", "label": "FAQ items (one per line: Question|Answer)", "default": "What is hydrogen water?|Hydrogen water is water infused with extra dissolved molecular hydrogen gas (H₂). It’s not the same as alkaline water.\nDoes water already contain hydrogen?|Yes, as H₂O. Hydrogen water means additional dissolved H₂ gas that isn’t chemically bound.\nHow do I know it’s working?|Most people judge by routine consistency, taste, and how they feel over weeks. If you track, do it over 4 to 8 weeks.\nIs hydrogen water safe?|Molecular hydrogen has been widely studied and is generally considered safe for typical use. If you’re pregnant, have a medical condition, or are on medication, check with your clinician.\nWhat PPM should I look for?|Many products target around 0.5 to 3+ PPM depending on device and cycle. Higher is not always better if the routine isn’t consistent." },
+
+    { "type": "header", "content": "Bottom CTA" },
+    { "type": "text", "id": "bottom_cta_heading", "label": "Bottom CTA heading", "default": "Make hydration feel like a daily upgrade" },
+    { "type": "textarea", "id": "bottom_cta_body", "label": "Bottom CTA body", "default": "Pick a device that fits your life. Then build the habit. That’s where the compounding happens." },
+    { "type": "text", "id": "bottom_cta_label", "label": "Bottom CTA label", "default": "Explore Dr. Water" },
+    { "type": "url", "id": "bottom_cta_link", "label": "Bottom CTA link" }
+  ],
+  "presets": [
+    { "name": "DRW - Why Hydrogen (One file)" }
+  ]
+}
+{% endschema %}

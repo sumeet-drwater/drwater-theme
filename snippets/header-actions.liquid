@@ -1,0 +1,1231 @@
+<script
+  type="module"
+  src="{{ 'cart-icon.js' | asset_url }}"
+  fetchpriority="low"
+></script>
+
+{% capture cart_icon %}
+  <cart-icon
+    class="
+      header-actions__cart-icon
+      {% unless cart == empty %} header-actions__cart-icon--has-cart{% endunless %}
+    "
+    data-testid="cart-icon"
+  >
+    <span
+      class="svg-wrapper"
+      aria-hidden="true"
+    >
+      {{ 'icon-cart.svg' | inline_asset_content }}
+    </span>
+
+    {% render 'cart-bubble', limit: 100, live_region: true, test_id: test_id %}
+  </cart-icon>
+{% endcapture %}
+
+<header-actions
+  {{- block.shopify_attributes -}}
+>
+  {% if shop.customer_accounts_enabled %}
+    <script
+      src="{{ 'dialog.js' | asset_url }}"
+      type="module"
+    ></script>
+
+    <anchored-popover-component
+      data-close-on-resize="true"
+      class="account-popover mobile:hidden"
+    >
+      {% render 'account-button' with 'account-popover' as popover_id %}
+      <div
+        class="account-popover__panel details-content color-{{ settings.popover_color_scheme }}"
+        id="account-popover"
+        popover="auto"
+        ref="popover"
+      >
+        {% render 'account-actions' %}
+      </div>
+    </anchored-popover-component>
+
+    <dialog-component
+      class="account-drawer"
+      {{ block.shopify_attributes }}
+    >
+      {% render 'account-button', attributes: 'on:click="/showDialog"' %}
+      <dialog
+        ref="dialog"
+        class="color-{{ settings.popover_color_scheme }} dialog-modal dialog-drawer dialog-bottom-sheet account-drawer__dialog"
+        scroll-lock
+        aria-labelledby="account-drawer-heading"
+      >
+        <button
+          ref="closeButton"
+          on:click="/closeDialog"
+          class="button button-unstyled close-button account-drawer__close-button"
+          aria-label="{{ 'actions.close_dialog' | t }}"
+          autofocus
+        >
+          <span
+            class="svg-wrapper"
+            aria-hidden="true"
+          >
+            {{- 'icon-close.svg' | inline_asset_content -}}
+          </span>
+        </button>
+        {% render 'account-actions' %}
+      </dialog>
+    </dialog-component>
+  {% endif %}
+
+  {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
+    <script
+      src="{{ 'cart-drawer.js' | asset_url }}"
+      type="module"
+      fetchpriority="low"
+    ></script>
+
+    <cart-drawer-component
+      class="cart-drawer"
+      {{ block.shopify_attributes }}
+      {% if settings.auto_open_cart_drawer %}
+        auto-open
+      {% endif %}
+    >
+      <button
+        class="button header-actions__action button-unstyled"
+        on:click="/open"
+        aria-haspopup="dialog"
+        aria-label="{{ 'accessibility.cart' | t }}"
+        aria-describedby="cart-bubble-text"
+        data-testid="cart-drawer-trigger"
+      >
+        {{ cart_icon }}
+      </button>
+
+      <dialog
+        ref="dialog"
+        class="cart-drawer__dialog dialog-modal dialog-drawer color-{{ settings.drawer_color_scheme }}{% if cart.empty? %} cart-drawer--empty{%endif%}"
+        aria-labelledby="{% if cart.empty? %}cart-drawer-heading-empty{% else %}cart-drawer-heading{% endif %}"
+        scroll-lock
+        cart-summary-sticky="true"
+      >
+        <div class="cart-drawer__inner">
+          <cart-items-component
+            class="cart-items-component"
+            data-section-id="{{ section.id }}"
+          >
+            {%- if cart.empty? or cart.total_price == 0 -%}
+              <div class="cart-drawer__header">
+                <button
+                  ref="closeButton"
+                  on:click="cart-drawer-component/close"
+                  class="button close-button cart-drawer__close-button button-unstyled"
+                  aria-label="{{ 'actions.close_dialog' | t }}"
+                >
+                  <span class="svg-wrapper">
+                    {{- 'icon-close.svg' | inline_asset_content -}}
+                  </span>
+                </button>
+              </div>
+
+
+              <div
+                class="cart-drawer__content motion-reduce"
+                aria-label="{{ 'accessibility.cart' | t }}"
+              >
+                <h2
+                  class="cart-drawer__heading h4 cart-drawer__heading--empty"
+                  id="cart-drawer-heading-empty"
+                >
+                  {{ 'content.your_cart_is_empty' | t }}
+                </h2>
+
+                <div class="cart-drawer__items">
+                  {% render 'cart-products', drawer_context: 'drawer' %}
+                </div>
+              </div>
+            {%- else -%}
+              {% comment %}  {% endcomment %}
+{%- assign total_savings = 0 -%}
+{%- for discount in cart.cart_level_discount_applications -%}
+  {%- unless discount.title == 'HYDRATEFIRST' -%}
+    {%- assign total_savings = total_savings | plus: discount.total_allocated_amount -%}
+  {%- endunless -%}
+{%- endfor -%}
+{%- for item in cart.items -%}
+  {%- for alloc in item.line_level_discount_allocations -%}
+    {%- assign total_savings = total_savings | plus: alloc.amount -%}
+  {%- endfor -%}
+{%- endfor -%}
+
+{%- if total_savings > 0 -%}
+  <div class="cart-savings-banner">
+    <span class="cart-savings-banner__dot"></span>
+    You're saving {{ total_savings | money }} on your
+    {%- if customer == nil or customer.orders_count == 0 %} first{%- endif %} order
+  </div>
+{%- endif -%}
+{% comment %}  {% endcomment %}
+              <div
+                class="cart-drawer__header"
+                id="cart-drawer-header"
+              >
+                <h2
+                  class="cart-drawer__heading h4"
+                  id="cart-drawer-heading"
+                >
+                  {{ 'content.cart_title' | t }}
+                  {% render 'cart-bubble' %}
+                </h2>
+
+                <button
+                  ref="closeButton"
+                  on:click="cart-drawer-component/close"
+                  class="button close-button cart-drawer__close-button button-unstyled"
+                  aria-label="{{ 'actions.close_dialog' | t }}"
+                >
+                  <span class="svg-wrapper">
+                    {{- 'icon-close.svg' | inline_asset_content -}}
+                  </span>
+                </button>
+              </div>
+{% comment %}  {% endcomment %}
+
+
+
+{%- assign tier1_threshold = 25000 -%}
+{%- assign tier1_discount = 15 -%}
+{%- assign tier2_threshold = 50000 -%}
+{%- assign tier2_discount = 20 -%}
+{%- assign cart_total = cart.original_total_price -%}
+{%- if cart_total < tier1_threshold -%}
+  {%- assign next_threshold = tier1_threshold -%}
+  {%- assign next_discount = tier1_discount -%}
+  {%- assign prev_threshold = 0 -%}
+{%- elsif cart_total < tier2_threshold -%}
+  {%- assign next_threshold = tier2_threshold -%}
+  {%- assign next_discount = tier2_discount -%}
+  {%- assign prev_threshold = tier1_threshold -%}
+{%- else -%}
+  {%- assign next_threshold = nil -%}
+{%- endif -%}
+
+{%- if next_threshold -%}
+  {%- assign remaining = next_threshold | minus: cart_total -%}
+  {%- assign range = next_threshold | minus: prev_threshold -%}
+  {%- assign bar_progress = cart_total | minus: prev_threshold | times: 100 | divided_by: range -%}
+  <div class="cart-progress">
+    <p class="cart-progress__label">Add <strong>{{ remaining | money }}</strong> more to get <strong>{{ next_discount }}% off</strong></p>
+    <div class="cart-progress__track">
+      <div class="cart-progress__fill" style="width: {{ bar_progress }}%"></div>
+    </div>
+  </div>
+{%- else -%}
+  <div class="cart-progress">
+    <p class="cart-progress__label">🎉 You've unlocked <strong>{{ tier2_discount }}% off</strong>!</p>
+    <div class="cart-progress__track"><div class="cart-progress__fill" style="width:100%"></div></div>
+  </div>
+{%- endif -%}
+
+{% comment %} {% render 'cart-summary' %} {% endcomment %}
+
+
+
+              
+              {% if settings.show_cart_header_offer and settings.cart_header_offer != blank %}
+                  {% if customer == nil %}
+                    <p class="cart_header_offer">
+                      {{ settings.cart_header_offer }}
+                    </p>
+                  {% elsif customer.orders_count == 0 %}
+                    <p class="cart_header_offer">
+                      {{ settings.cart_header_offer }}
+                    </p>
+                  {% endif %}
+              {% endif %}
+
+
+                        
+
+              
+              {% if section.settings.free_gift_product %}
+  
+      {% if customer == nil %}
+        <script>
+          window.freeGiftVariant = {{ section.settings.free_gift_product.variants.first.id }};
+        </script>
+
+      {% elsif customer.orders_count == 0 %}
+        <script>
+          window.freeGiftVariant = {{ section.settings.free_gift_product.variants.first.id }};
+        </script>
+
+      {% endif %}
+
+    {% endif %}
+
+              <scroll-hint
+                class="cart-drawer__content motion-reduce"
+                aria-label="{{ 'accessibility.cart' | t }}"
+                style="--header-height: 60px;"
+              >
+                <scroll-hint
+                  class="cart-drawer__items"
+                >
+                  {% render 'cart-products', drawer_context: 'drawer' %}
+              {% if settings.upsell_collection %}
+  {% assign cart_product_ids = cart.items | map: 'product_id' %}
+
+  <div class="cart_upsell">
+    <div class="upsell_header">
+    <h4>You may also like</h4> <a href="{{settings.upsell_collection.url }}">View All</a>
+    </div>
+    <div class="cart-upsell-grid">
+      {% for product in settings.upsell_collection.products limit: 8 %}
+        {% unless cart_product_ids contains product.id %}
+          {% assign variant = product.selected_or_first_available_variant %}
+
+          <div class="cart-upsell-item">
+            <div class="upsell_cart_img">
+            <img
+              src="{{ product.featured_image | image_url: width: 300 }}"
+              alt="{{ product.title }}"
+              loading="lazy"
+            >
+            </div>
+            <div class="cart-upsell-info">
+          <a href="{{ product.url }}" class="cart-upsell-title">{{ product.title }}</a>
+
+              <div class="cart-upsell-price">
+                {% if variant.compare_at_price > variant.price %}
+                  <span class="compare"><del>{{ variant.compare_at_price | money }}</del></span>
+                  <span class="sale">{{ variant.price | money }}</span>
+                {% else %}
+                  <span>{{ variant.price | money }}</span>
+                {% endif %}
+              </div>
+
+              <button
+                class="button button--small upsell-add-to-cart"
+                data-variant-id="{{ variant.id }}"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+          </a>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+
+{% if settings.show_rating_badge %}
+
+  <div class="rating-badge">
+
+    {% if settings.customers_image != blank %}
+      <div class="rating-image">
+        <img 
+          src="{{ settings.customers_image | image_url: width: 200 }}" 
+          alt="Customers"
+          loading="lazy"
+        >
+      </div>
+    {% endif %}
+    <span class="star_rating">★ ★ ★ ★ ★</span>
+    {% if settings.rating_content != blank %}
+      <div class="rating-text">
+        {{ settings.rating_content }}
+      </div>
+    {% endif %}
+
+  </div>
+{% endif %}
+
+
+                </scroll-hint>
+
+
+
+
+                <div
+                  class="cart-drawer__summary"
+                >
+                
+                  
+
+
+
+
+
+
+
+                  {% render 'cart-summary' %}
+                </div>
+              </scroll-hint>
+            {%- endif -%}
+          </cart-items-component>
+        </div>
+      </dialog>
+    </cart-drawer-component>
+  {% else %}
+    <a
+      href="{{ routes.cart_url }}"
+      class="header-actions__action action__cart"
+      aria-label="{{ 'accessibility.cart' | t }}"
+      aria-describedby="cart-bubble-text"
+    >
+      {{ cart_icon }}
+    </a>
+  {% endif %}
+</header-actions>
+
+{% stylesheet %}
+
+/*  */
+.cart-progress {
+  padding: 10px 20px 14px;
+}
+.cart-progress__label {
+  font-size: 13px;
+  margin: 0 0 6px;
+  color: var(--color-foreground);
+}
+.cart-progress__track {
+  height: 6px;
+  background: #e5e5e5;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.cart-progress__fill {
+  height: 100%;
+  background: #f0c000;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+.cart-savings-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef9d9;
+  border-top: 3px solid #c8a800;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3a3000;
+}
+.cart-savings-banner__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f0c000;
+  animation: blink 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+.cart-savings-banner {
+  display: flex; align-items: center; gap: 10px;
+  background: #fef9d9; border-top: 3px solid #c8a800;
+  padding: 10px 16px; font-size: 14px; font-weight: 600; color: #3a3000;
+}
+.cart-savings-banner__dot {
+  width: 10px; height: 10px; border-radius: 50%; background: #f0c000;
+  animation: blink 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.2; }
+}
+.cart-progress { padding: 10px 16px 12px; }
+.cart-progress__label { font-size: 13px; margin: 0 0 6px; color: var(--color-foreground); }
+.cart-progress__track {
+  height: 6px; background: #e5e5e5; border-radius: 99px; overflow: hidden;
+}
+.cart-progress__fill {
+  height: 100%; background: #f0c000; border-radius: 99px;
+  transition: width 0.4s ease;
+}
+/*  */
+  .account-popover {
+    --account-popover-min-width: 22rem;
+    --account-actions-max-width: 22rem;
+  }
+
+  .account-popover__summary {
+    padding: 0;
+
+    &:hover {
+      color: var(--color-foreground);
+    }
+  }
+
+  .account-popover__panel {
+    --account-popover-opacity: 0;
+    --account-popover-y: 20px;
+
+    position-anchor: --account-button-trigger;
+    border-radius: var(--style-border-radius-popover);
+    margin: 0;
+    left: unset;
+    width: max-content;
+    min-width: var(--account-popover-min-width);
+    box-shadow: var(--shadow-popover);
+    border: var(--style-border-popover);
+    background-color: var(--color-background);
+    overflow-y: hidden;
+    opacity: var(--account-popover-opacity);
+    translate: 0 var(--account-popover-y);
+    transition-property: display, opacity, translate;
+    transition-duration: 0.3s;
+    transition-timing-function: var(--ease-out-quad);
+    transition-behavior: allow-discrete;
+    top: calc(anchor(bottom) + var(--header-padding));
+    right: anchor(right);
+
+    &:popover-open {
+      --account-popover-opacity: 1;
+      --account-popover-y: 0px;
+    }
+
+    @supports not (position-anchor: --account-button-trigger) {
+      top: calc(var(--anchor-top) * 1px + var(--minimum-touch-target) + var(--header-padding));
+      right: calc(var(--anchor-right) * 1px);
+    }
+
+    @supports not selector(:popover-open) {
+      &.\:popover-open {
+        --account-popover-opacity: 1;
+        --account-popover-y: 0px;
+      }
+    }
+  }
+
+  @starting-style {
+    .account-popover__panel {
+      --account-popover-opacity: 0.7;
+      --account-popover-y: 20px;
+    }
+
+    .account-popover__panel:popover-open {
+      --account-popover-opacity: 0.7;
+      --account-popover-y: 20px;
+    }
+  }
+
+  .account-drawer {
+    @media screen and (min-width: 750px) {
+      display: none;
+    }
+  }
+
+  .account-drawer__dialog {
+    --animation-speed: 0.24s;
+    --dialog-drawer-opening-animation: move-and-fade;
+    --dialog-drawer-closing-animation: move-and-fade;
+
+    height: fit-content;
+    margin: 0;
+    inset-block-end: 0;
+    inset-block-start: auto;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .dialog-drawer.account-drawer__dialog[open] {
+    --start-x: 0px;
+    --end-x: 0px;
+    --start-y: 100%;
+    --start-opacity: 1;
+  }
+
+  .dialog-drawer.account-drawer__dialog.dialog-closing {
+    --start-x: 0px;
+    --end-x: 0px;
+    --end-y: 100%;
+    --start-opacity: 1;
+  }
+
+  .account-drawer__close-button {
+    z-index: 1;
+    inset-block-start: var(--padding-xs);
+    inset-inline-end: var(--padding-xs);
+    color: var(--color-foreground);
+    background-color: transparent;
+  }
+
+  .account-drawer__close-button .svg-wrapper {
+    display: flex;
+    width: var(--button-size);
+    height: var(--button-size);
+    align-items: center;
+    justify-content: center;
+  }
+
+
+
+  @keyframes account-drawer-slide-in {
+    from {
+      transform: translateY(100%);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes account-drawer-slide-out {
+    from {
+      transform: translateY(0);
+    }
+
+    to {
+      transform: translateY(100%);
+    }
+  }
+
+  .cart-drawer {
+    --cart-drawer-padding: var(--padding-lg) var(--padding-xl);
+    --cart-drawer-padding-desktop: var(--padding-xl) var(--padding-2xl);
+    --cart-font-size--2xs: var(--font-size--2xs);
+    --cart-font-size--xs: var(--font-size--xs);
+    --cart-font-size--sm: var(--font-size--sm);
+    --cart-font-size--md: var(--font-size--md);
+    --cart-font-size--lg: var(--font-size--lg);
+    --cart-font-size--xl: var(--font-size--xl);
+    --cart-font-size--2xl: var(--font-size--2xl);
+  }
+
+  .cart-drawer__dialog {
+    position: fixed;
+    overflow: hidden;
+    border-radius: 0;
+    width: var(--sidebar-width);
+    max-width: 95vw;
+    height: 100%;
+    margin: 0 0 0 auto;
+    padding: 0;
+    border-left: var(--style-border-drawer);
+    box-shadow: var(--shadow-drawer);
+    background-color: var(--color-background);
+  }
+
+  .cart-items-component {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+.cart_header_offer {
+    margin: 0;
+    padding: var(--padding-sm);
+    background: var(--light-blue);
+    text-align: center;
+    color: #ffffff;
+}
+
+  /* Needed to ensure the drawer is full height */
+  .cart-drawer__dialog:modal {
+    max-height: 100dvh;
+    overflow-y: hidden;
+  }
+
+  .cart-drawer__inner {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .cart-drawer__content {
+    height: calc(100% - var(--header-height));
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0 0 0;
+    background-color: var(--color-background);
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+
+  .cart-drawer__heading {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    font-family: 'JUST-Sans-SemiBold' !important;
+    margin: 0;
+
+    @media screen and (max-width: 749px) {
+      margin-bottom: 0;
+    }
+  }
+
+  .cart-drawer__close-button {
+    margin-right: calc(var(--padding-sm) * -1);
+    top: var(--margin-sm);
+
+    @media screen and (max-width: 749px) {
+      top: var(--margin-2xs);
+    }
+  }
+
+  .cart-drawer--empty .cart-drawer__content {
+    text-align: center;
+    min-height: auto;
+  }
+
+  .cart-drawer--empty .cart-drawer__heading {
+    margin-bottom: var(--margin-md);
+  }
+
+  .cart-drawer__items .cart-items__table-row {
+    padding-bottom: var(--gap-xl);
+    border-bottom: var(--style-border-width) solid var(--color-border);
+    margin-bottom: var(--gap-xl);
+    position:relative;
+  }
+
+  .cart-drawer__items .cart-items__table-row:has(+ .cart-items__nested-line) {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .cart-drawer__items .cart-items__table-row:last-child {
+    border-bottom: none;
+  }
+
+  .cart-drawer__summary {
+    --cart-drawer-summary-padding: var(--padding-lg);
+
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-xl);
+    padding: var(--cart-drawer-summary-padding);
+    margin-top: auto;
+    background-color: var(--color-background);
+    /* stylelint-disable-next-line color-named */
+    mask-image: linear-gradient(to bottom, transparent, black var(--cart-drawer-summary-padding));
+
+    @media screen and (min-width: 750px) {
+      --cart-drawer-summary-padding: var(--padding-2xl);
+    }
+  }
+
+  .cart-drawer__dialog[cart-summary-sticky='false'] .cart-drawer__summary {
+    position: static;
+    mask-image: none;
+  }
+
+  .cart-drawer__dialog[cart-summary-sticky='false'] .cart-drawer__items {
+    overflow: unset;
+  }
+
+  .cart-actions summary,
+  .cart-actions .disclosure-trigger {
+    padding-inline: 0;
+    padding-block: var(--padding-sm);
+    line-height: 1.2;
+    min-height: var(--minimum-touch-target);
+  }
+
+  .cart-drawer__summary .cart__summary-totals:not(:has(.cart__original-total-container:empty)) {
+    border-block-start: var(--style-border-width) solid var(--color-border);
+    padding-block-start: var(--padding-2xl);
+  }
+
+  .cart-drawer__summary .cart-note {
+    @media screen and (min-width: 750px) {
+      margin-block-start: var(--margin-3xs);
+    }
+  }
+
+  .cart-drawer__heading--empty {
+    display: flex;
+    justify-content: center;
+  }
+
+  .cart-drawer__items {
+    display: flex;
+    flex-direction: column;
+    padding-inline: var(--cart-drawer-padding);
+    overflow-y: auto;
+
+    @media screen and (min-width: 750px) {
+      padding-inline: var(--cart-drawer-padding-desktop);
+    }
+  }
+
+  .cart-drawer__items .cart-items__table-row {
+    padding-bottom: var(--gap-xl);
+    border-bottom: var(--style-border-width) solid var(--color-border);
+    margin-bottom: var(--gap-xl);
+  }
+
+  .cart-drawer__items .cart-items__table-row:last-child {
+    border-bottom: none;
+    padding-block-end: 0;
+    margin-block-end: 0;
+  }
+
+  .cart-drawer--empty .cart-drawer__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    margin-top: 0;
+  }
+
+  .cart-drawer:not(:has(.cart-form)) .cart-drawer__content {
+    justify-content: center;
+  }
+
+  .cart-drawer__header {
+    background-color: var(--color-background);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--cart-drawer-padding);
+    border-bottom: var(--style-border-width) solid none;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    @media screen and (min-width: 750px) {
+      padding: var(--cart-drawer-padding-desktop);
+    }
+  }
+
+  .cart-drawer--empty .cart-drawer__header {
+    justify-content: right;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .cart-drawer--empty .cart-drawer__heading {
+    text-align: center;
+  }
+
+  .cart-drawer:not(:has(.cart-form)) .cart-items__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  header-actions {
+    display: flex;
+
+    @media screen and (max-width: 749px) {
+      justify-self: flex-end;
+    }
+  }
+
+  .header__column--right header-actions {
+    margin-inline-start: calc(var(--gap-md) * -1);
+  }
+
+  .header-actions__action {
+    --button-color: var(--color-foreground);
+
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+  }
+
+  .header-actions__action .svg-wrapper {
+    height: var(--button-size);
+    width: var(--button-size);
+  }
+
+  .header-actions__action svg {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+  }
+
+  .header-actions__cart-icon {
+    --cart-bubble-size: 15px;
+    --cart-bubble-top: 4.5px;
+    --cart-bubble-right: 2.5px;
+
+    position: relative;
+  }
+
+  .header-actions__cart-icon .cart-bubble {
+    position: absolute;
+    width: var(--cart-bubble-size, 20px);
+    top: var(--cart-bubble-top);
+    right: var(--cart-bubble-right);
+  }
+
+  .cart-drawer__heading .cart-bubble {
+    width: fit-content;
+    border-radius: var(--style-border-radius-buttons-primary);
+    aspect-ratio: auto;
+    padding: var(--cart-padding);
+  }
+
+  .cart-drawer__heading .cart-bubble[data-maintain-ratio] {
+    aspect-ratio: 1;
+    min-width: 26px;
+  }
+
+  .header-actions__cart-icon .cart-bubble__text,
+  .cart-drawer__heading .cart-bubble__text {
+    font-family: var(--font-paragraph--family);
+    font-weight: var(--font-paragraph--weight);
+  }
+
+  .header-actions__cart-icon.header-actions__cart-icon--has-cart svg {
+    /* Create donut mask where the cart bubble sits */
+    mask: radial-gradient(
+      calc(var(--cart-bubble-size) + 2px) at calc(100% - var(--cart-bubble-right)) var(--cart-bubble-top),
+      transparent 45.45%,
+      #fff 45.45%,
+      #fff 100%
+    );
+  }
+
+  .cart-drawer__heading .cart-bubble__background {
+    background-color: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
+  }
+
+  .cart-drawer__heading .cart-bubble__text {
+    color: var(--color-foreground);
+    font-size: var(--font-size--xs);
+  }
+
+  .cart-bubble--animating .cart-bubble__background {
+    animation: grow var(--animation-speed) var(--animation-easing);
+  }
+
+  .cart-bubble--animating .cart-bubble__text {
+    --start-y: -1em;
+    --start-opacity: 1;
+    /* Set initial transform state before animation starts */
+    transform: translate(0, var(--start-y, -1em));
+    opacity: var(--start-opacity, 1);
+    animation: move-and-fade var(--animation-speed) var(--animation-easing);
+  }
+
+  cart-icon:has(.cart-bubble__text-count:empty) {
+    --cart-bubble-size: 10px;
+    --cart-bubble-top: 9px;
+    --cart-bubble-right: 9px;
+
+    .svg-wrapper {
+      --cart-bubble-top: 4px;
+      --cart-bubble-right: 4px;
+    }
+  }
+
+
+  .cart-with-gift .cart-items__table-row:has(.free-gift-badge) {
+    margin-top: 1rem;
+    background: #E7F3FC;
+    border: 1px solid #066AC1;
+    border-radius: 8px;
+    padding:0;
+    position:relative;
+    margin-top:0;
+        margin-bottom: 40px;
+}
+
+.cart-with-gift>tbody .cart-items__table-row:has(.free-gift-badge):after {
+    position: absolute;
+    left: 0;
+    bottom: -20px;
+    width: 100%;
+    height: 0;
+    border-bottom: 1px solid #dcdcdc;
+    content: "";
+    top: auto;
+}
+  .cart-with-gift .cart-items__table-row:has(.free-gift-badge) .cart-items__media {
+    grid-area: media;
+    padding: 0;
+    grid-row: span 2;
+    height: 100% ;
+}
+  .cart-with-gift .cart-items__table-row:has(.free-gift-badge) .cart-items__details {
+    padding: 24px 8px;
+}
+
+  .cart-with-gift .cart-items__table-row:has(.free-gift-badge)  .cart-items__quantity{
+    display: none;
+  }
+
+   .cart-with-gift .cart-items__table-row:has(.free-gift-badge) .cart-items__media-container img,
+   .cart-with-gift .cart-items__table-row:has(.free-gift-badge) .cart-items__media-container {
+   border-radius:8px 0 0 8px;
+    height: 100%;
+}
+.free-gift-badge {
+    padding: 4px 8px;
+    background: var(--light-blue);
+    border-radius: 4px;
+    white-space: nowrap;
+    color: #ffffff;
+    font-family: 'JUST-Sans-Medium';
+}
+.cart-items__price * {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+.cart-items__price{
+    margin-top: 12px;
+}
+.cart-upsell-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    overflow: auto;
+    width: calc(100% + 44px);
+    margin-left: -20px;
+    padding-left: 20px;
+}
+.cart-upsell-grid {
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE / old Edge */
+}
+
+.cart-upsell-grid::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, new Edge */
+}
+
+.cart-upsell-item {
+    max-width: 160px;
+    padding-right: 24px;
+    width: 100%;
+    min-width: 160px;
+    border-right: 1px solid var(--color-border);
+}
+.cart-upsell-grid > .cart-upsell-item:last-child{
+    border:none;
+}
+.upsell_cart_img {
+    background: #ebebeb;
+    border-radius: 4px;
+}
+.upsell_header h4 {
+    margin-bottom: 1rem;
+}
+.cart-upsell-item img {
+    width: 100%;
+    border-radius: 4px;
+    aspect-ratio: 1;
+    mix-blend-mode: darken;
+}
+.cart-upsell-title {
+    font-size: 14px;
+    line-height: 1.2;
+    margin-top: 8px !important;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: 'JUST-Sans-Medium';
+    color:var(--black);
+}
+.cart-upsell-price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    margin-top: 6px;
+    line-height: 1;
+    color: var(--black);
+}
+.upsell-add-to-cart {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-family: 'JUST-Sans-Medium';
+    margin-top: 12px;
+    width: 100%;
+}
+.cart-upsell-price .compare {
+    font-size: 10px;
+    color: #666;
+}
+.cart-upsell-price .compare *{
+  margin:0;
+}
+.upsell_header {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+.upsell_header a{
+  font-size: 14px;
+  color:var(--light-blue);
+     font-family: 'JUST-Sans-Medium';
+
+}
+.cart_upsell {
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-border);
+    margin-top: 2rem;
+}
+
+.cart-upsell-grid {
+  cursor: grab;
+  user-select: none;
+}
+
+.cart-upsell-grid.dragging {
+  cursor: grabbing;
+}
+.cart-with-gift > tbody {
+    display: flex;
+    flex-direction: column;
+}
+.rating-image {
+    max-width: 160px;
+    width: 100%;
+}
+.rating-badge {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #dcdcdc;
+}
+.star_rating {
+    color: #FA9E00;
+    font-size: 20px;
+    font-weight: 800;
+}
+.rating-text {
+    color: var(--black);
+    font-size: 12px;
+}
+/* Free gift always first */
+.cart-with-gift > tbody .cart-items__table-row:has(.free-gift-badge){
+  order: 1;
+}
+
+/* Normal items ordering */
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(1){ order: 2; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(2){ order: 3; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(3){ order: 4; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(4){ order: 5; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(5){ order: 6; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(6){ order: 7; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(7){ order: 8; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(8){ order: 9; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(9){ order: 10; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(10){ order: 11; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(11){ order: 12; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(12){ order: 13; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(13){ order: 14; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(14){ order: 15; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(15){ order: 16; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(16){ order: 17; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(17){ order: 18; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(18){ order: 19; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(19){ order: 20; }
+.cart-with-gift > tbody .cart-items__table-row:not(:has(.free-gift-badge)):nth-of-type(20){ order: 21; }
+
+  @media (max-width:480px){
+    .cart-with-gift .cart-items__table-row:has(.free-gift-badge) .cart-items__details {
+    padding: 1rem 0;
+}
+.cart-with-gift .cart-items__table-row:has(.free-gift-badge) .cart-items__remove {
+    /* min-width: 36px; */
+    margin-right: 8px;
+}
+.cart-items__price {
+    margin-top: 4px;
+}
+
+
+.cart-upsell-grid {
+    gap: 16px;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    padding-left: 16px;
+}
+.cart-upsell-item {
+    max-width: 120px;
+    padding-right: 1rem;
+    min-width: 120px;
+}
+.cart-upsell-title {
+    font-size: 12px;
+}
+.upsell_header h4 {
+    font-size: 14px;
+}
+.upsell_header a {
+    font-size: 12px;
+}
+.cart_header_offer {
+    font-size: 12px;
+    padding: .5rem;
+}
+.cart-drawer__header {
+    padding: .8rem 1rem;
+}
+.cart-drawer__summary {
+    gap: .8rem;
+}
+  }
+{% endstylesheet %}
+
+
+{% comment %} Free Gift for 1st order {% endcomment %}
+{% if settings.free_gift_product %}
+  {% unless customer and customer.orders_count > 0 %}
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        const variantId = {{ settings.free_gift_product.variants.first.id | json }};
+        if (!variantId) return;
+
+        const cart = await fetch('/cart.js').then(r => r.json());
+        const hasGift = cart.items.some(item => item.id === variantId);
+
+        const giftRemoved = localStorage.getItem('freeGiftRemoved') === 'true';
+
+        if (cart.item_count === 0) {
+          localStorage.removeItem('freeGiftRemoved');
+        }
+
+        if (cart.item_count > 0 && !hasGift && !giftRemoved) {
+          await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: variantId,
+              quantity: 1
+            })
+          });
+
+          window.location.reload();
+        }
+
+        if (!hasGift && cart.item_count > 0 && localStorage.getItem('giftWasInCart')) {
+          localStorage.setItem('freeGiftRemoved', 'true');
+        }
+
+        if (hasGift) {
+          localStorage.setItem('giftWasInCart', 'true');
+        }
+      });
+    </script>
+  {% endunless %}
+{% endif %}

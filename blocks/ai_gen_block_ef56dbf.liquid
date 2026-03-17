@@ -1,0 +1,355 @@
+{% doc %}
+  @prompt
+    a responsive countdown time with the setting to pick a date (DD: HH: MM: SS) , make the font JUST SANS it is my theme font, also the text should in line with the countdown (horizontally next to each other) right now it is vertically stacked. height of the section should be only as big as the maqruee section on top. there is no need of the titles below the numbers "DAY" HOURS" etc. just wrtie 07 D: 07 H: 46 M: 57 S, It is still not till the edge of the screen on left and right? the content is eprfect the background colour should cover the full width of the screen right? any screen. 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-countdown-timer-{{ ai_gen_id }} {
+    display: block;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    padding: {{ block.settings.padding }}px 20px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-countdown-timer__container-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: {{ block.settings.gap }}px;
+    flex-wrap: wrap;
+  }
+
+  .ai-countdown-timer__heading-{{ ai_gen_id }} {
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0;
+    font-family: var(--font-heading-family);
+    line-height: 1;
+  }
+
+  .ai-countdown-timer__display-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: {{ block.settings.unit_gap }}px;
+  }
+
+  .ai-countdown-timer__unit-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .ai-countdown-timer__value-{{ ai_gen_id }} {
+    font-size: {{ block.settings.number_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.number_color }};
+    line-height: 1;
+    font-family: var(--font-heading-family);
+  }
+
+  .ai-countdown-timer__label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.number_size }}px;
+    color: {{ block.settings.label_color }};
+    font-family: var(--font-heading-family);
+    line-height: 1;
+  }
+
+  .ai-countdown-timer__expired-{{ ai_gen_id }} {
+    color: {{ block.settings.expired_color }};
+    font-size: {{ block.settings.expired_size }}px;
+    font-weight: 600;
+    font-family: var(--font-heading-family);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-countdown-timer__heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.8);
+    }
+
+    .ai-countdown-timer__value-{{ ai_gen_id }},
+    .ai-countdown-timer__label-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.number_size }}px * 0.7);
+    }
+
+    .ai-countdown-timer__container-{{ ai_gen_id }} {
+      gap: calc({{ block.settings.gap }}px * 0.7);
+    }
+
+    .ai-countdown-timer__display-{{ ai_gen_id }} {
+      gap: calc({{ block.settings.unit_gap }}px * 0.7);
+    }
+  }
+{% endstyle %}
+
+<countdown-timer-{{ ai_gen_id }}
+  class="ai-countdown-timer-{{ ai_gen_id }}"
+  data-end-date="{{ block.settings.end_date }}"
+  data-end-time="{{ block.settings.end_time }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-countdown-timer__container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-countdown-timer__heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="ai-countdown-timer__display-{{ ai_gen_id }}">
+      {% if block.settings.show_days %}
+        <div class="ai-countdown-timer__unit-{{ ai_gen_id }}">
+          <span class="ai-countdown-timer__value-{{ ai_gen_id }}" data-days>00</span>
+          <span class="ai-countdown-timer__label-{{ ai_gen_id }}">D:</span>
+        </div>
+      {% endif %}
+
+      <div class="ai-countdown-timer__unit-{{ ai_gen_id }}">
+        <span class="ai-countdown-timer__value-{{ ai_gen_id }}" data-hours>00</span>
+        <span class="ai-countdown-timer__label-{{ ai_gen_id }}">H:</span>
+      </div>
+
+      <div class="ai-countdown-timer__unit-{{ ai_gen_id }}">
+        <span class="ai-countdown-timer__value-{{ ai_gen_id }}" data-minutes>00</span>
+        <span class="ai-countdown-timer__label-{{ ai_gen_id }}">M:</span>
+      </div>
+
+      <div class="ai-countdown-timer__unit-{{ ai_gen_id }}">
+        <span class="ai-countdown-timer__value-{{ ai_gen_id }}" data-seconds>00</span>
+        <span class="ai-countdown-timer__label-{{ ai_gen_id }}">S</span>
+      </div>
+    </div>
+
+    <div class="ai-countdown-timer__expired-{{ ai_gen_id }}" data-expired style="display: none;">
+      {{ block.settings.expired_message }}
+    </div>
+  </div>
+</countdown-timer-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CountdownTimer{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.endDate = this.dataset.endDate;
+        this.endTime = this.dataset.endTime;
+        this.interval = null;
+      }
+
+      connectedCallback() {
+        this.daysElement = this.querySelector('[data-days]');
+        this.hoursElement = this.querySelector('[data-hours]');
+        this.minutesElement = this.querySelector('[data-minutes]');
+        this.secondsElement = this.querySelector('[data-seconds]');
+        this.expiredElement = this.querySelector('[data-expired]');
+        this.displayElement = this.querySelector('.ai-countdown-timer__display-{{ ai_gen_id }}');
+
+        if (this.endDate && this.endTime) {
+          this.startCountdown();
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.interval) {
+          clearInterval(this.interval);
+        }
+      }
+
+      startCountdown() {
+        this.updateCountdown();
+        this.interval = setInterval(() => {
+          this.updateCountdown();
+        }, 1000);
+      }
+
+      updateCountdown() {
+        const endDateTime = new Date(this.endDate + 'T' + this.endTime).getTime();
+        const now = new Date().getTime();
+        const distance = endDateTime - now;
+
+        if (distance < 0) {
+          clearInterval(this.interval);
+          this.displayElement.style.display = 'none';
+          this.expiredElement.style.display = 'block';
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (this.daysElement) {
+          this.daysElement.textContent = this.padZero(days);
+        }
+        this.hoursElement.textContent = this.padZero(hours);
+        this.minutesElement.textContent = this.padZero(minutes);
+        this.secondsElement.textContent = this.padZero(seconds);
+      }
+
+      padZero(num) {
+        return num.toString().padStart(2, '0');
+      }
+    }
+
+    customElements.define('countdown-timer-{{ ai_gen_id }}', CountdownTimer{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Countdown timer",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Limited Time Offer"
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "End date",
+      "info": "Format: YYYY-MM-DD (e.g., 2026-12-31)",
+      "default": "2026-12-31"
+    },
+    {
+      "type": "text",
+      "id": "end_time",
+      "label": "End time",
+      "info": "Format: HH:MM:SS (e.g., 23:59:59)",
+      "default": "23:59:59"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "expired_message",
+      "label": "Expired message",
+      "default": "This offer has ended"
+    },
+    {
+      "type": "header",
+      "content": "Display options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_days",
+      "label": "Show days",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between heading and timer",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "unit_gap",
+      "label": "Gap between time units",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#142b77"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "number_color",
+      "label": "Numbers",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Labels",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "expired_color",
+      "label": "Expired message",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "number_size",
+      "label": "Timer size",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "expired_size",
+      "label": "Expired message size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown timer"
+    }
+  ]
+}
+{% endschema %}
