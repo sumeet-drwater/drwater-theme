@@ -26,11 +26,11 @@
         assign media_width_desktop = 100 | append: 'vw'
         assign media_width_mobile = '100vw'
         assign sizes = '(min-width: 750px) ' | append: media_width_desktop | append: ', ' | append: media_width_mobile
-        assign widths = '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+        assign widths = '240, 480, 720, 960, 1200, 1440, 1600, 1920'
       %}
       {{
         background_video.preview_image
-        | image_url: width: 3840
+        | image_url: width: 1920
         | image_tag: width: 1100, widths: widths, sizes: sizes
       }}
       <video
@@ -105,7 +105,7 @@
       %}
       {{
         background_image
-        | image_url: width: 3840
+        | image_url: width: 1920
         | image_tag: sizes: sizes, widths: widths, loading: loading, fetchpriority: fetch_priority
       }}
     {%- else -%}

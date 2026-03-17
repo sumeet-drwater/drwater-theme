@@ -44,8 +44,25 @@
     {{ content_for_header }}
   </head>
 
-  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}"><script async src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=TmnC6g
-"></script>
+  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+  <!-- Klaviyo: deferred until first user interaction or 5s — improves INP -->
+  <script>
+    (function(){
+      var loaded=false;
+      function loadKlaviyo(){
+        if(loaded)return;
+        loaded=true;
+        var s=document.createElement('script');
+        s.src='https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=TmnC6g';
+        s.async=true;
+        document.body.appendChild(s);
+      }
+      window.addEventListener('scroll',loadKlaviyo,{once:true});
+      window.addEventListener('click',loadKlaviyo,{once:true});
+      window.addEventListener('touchstart',loadKlaviyo,{once:true});
+      setTimeout(loadKlaviyo,5000);
+    })();
+  </script>
         <!-- Ravvio Chat Bubble Widget -->
 <style>
   .chat-container {
