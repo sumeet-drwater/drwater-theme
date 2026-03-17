@@ -92,7 +92,8 @@
     endcase
   endif
 
-  assign widths = '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+  {%- comment -%}[2026-03-17] Speed: capped from 3840→1600 — resource images are content cards, never full-screen{%- endcomment -%}
+  assign widths = '240, 352, 832, 1200, 1600'
 
   # Generate placeholder info based on content type
   if content_type == 'articles'

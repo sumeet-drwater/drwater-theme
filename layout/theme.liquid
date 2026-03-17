@@ -87,7 +87,8 @@
     align-items: center !important;
     justify-content: center !important;
     position: relative;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* [2026-03-17] Speed: was transition:all — only animate compositable properties to avoid jank */
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     padding: 0 !important;
   }
 

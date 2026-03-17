@@ -3,10 +3,9 @@
 <link rel="dns-prefetch" href="https://loox.io">
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.shopify.com">
-<link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-<link rel="dns-prefetch" href="https://fonts.shopifycdn.com">
-<link rel="preconnect" href="https://static.klaviyo.com" crossorigin>
-<link rel="dns-prefetch" href="https://static.klaviyo.com">
+<!-- [2026-03-17] Speed: removed fonts.shopifycdn.com (Lighthouse: unused preconnect) and static.klaviyo.com (Klaviyo is now deferred) -->
+<!-- [2026-03-17] Speed: preload primary heading font to reduce FCP latency -->
+<link rel="preload" href="{{ 'JUST-Sans-Medium.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
 <meta
   http-equiv="X-UA-Compatible"
   content="IE=edge"
