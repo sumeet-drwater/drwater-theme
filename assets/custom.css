@@ -614,10 +614,11 @@ body.rebuy-cart-visible{
 
 }
 /* [2026-03-17] A11y+Speed: dot hit area = 44px min (was 12px — failed touch target audit).
-   Visual dot moved to ::after so button can be transparent 44×44 wrapper. */
+   Visual dot (12px) lives in ::after; button is transparent 44×44 wrapper.
+   Negative margin (-7px each side) keeps visual center-to-center = 30px — same as original 12px dot + 18px gap. */
 .hero_slide .slideshow-controls__dots {
     justify-content: center;
-    gap: 0; /* padding on 44px buttons provides equivalent visual spacing */
+    gap: 0;
 }
 .hero_slide .slideshow-controls__dots button {
     box-shadow: none !important;
@@ -631,6 +632,7 @@ body.rebuy-cart-visible{
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-inline: -7px; /* (44-30)/2 = 7px overlap → preserves original 30px center-to-center */
 }
 .hero_slide .slideshow-controls__dots button::after {
     content: '';
@@ -642,7 +644,7 @@ body.rebuy-cart-visible{
     border-radius: 6px;
     box-shadow: none !important;
     mix-blend-mode: normal !important;
-    /* [2026-03-17] Speed: specific property only (was transition:all which triggers non-compositable reflows) */
+    /* [2026-03-17] Speed: specific property only (was transition:all — non-compositable) */
     transition: width 0.4s ease-in-out, border-radius 0.4s ease-in-out;
 }
 .hero_slide slideshow-slides{
@@ -1126,11 +1128,13 @@ div:has(>.features_grid){
 .product-video-list>deferred-media {
     min-width: 60vw;
 }
-/* [2026-03-17] A11y: keep 44px touch target on mobile; shrink visual dot via ::after */
+/* [2026-03-17] A11y: keep 44px touch target on mobile; visual dot stays 6px via ::after.
+   margin-inline: -11px → (44-22)/2 = 11px overlap, preserving original 22px center-to-center (6px + 16px gap). */
 .hero_slide .slideshow-controls__dots button {
     width: 44px;
     min-width: 44px;
     height: 44px;
+    margin-inline: -11px;
 }
 .hero_slide .slideshow-controls__dots button::after {
     width: 6px;
