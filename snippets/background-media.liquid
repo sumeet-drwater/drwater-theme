@@ -88,7 +88,8 @@
         assign sizes = '100vw'
       endif
 
-      assign widths = '832, 1200, 1600, 1920, 2560, 3840'
+      {%- comment -%}[2026-03-17] Speed: capped from 3840→1920 — section backgrounds never need 4K{%- endcomment -%}
+      assign widths = '832, 1200, 1600, 1920'
     %}
 
     {%- if background_image != blank -%}

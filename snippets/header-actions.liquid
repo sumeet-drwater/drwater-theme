@@ -43,7 +43,8 @@
         popover="auto"
         ref="popover"
       >
-        {% render 'account-actions' %}
+        {%- comment -%}[2026-03-17] A11y: pass unique heading_id — this snippet renders twice, causing duplicate IDs{%- endcomment -%}
+        {% render 'account-actions', heading_id: 'account-popover-heading' %}
       </div>
     </anchored-popover-component>
 
@@ -72,7 +73,8 @@
             {{- 'icon-close.svg' | inline_asset_content -}}
           </span>
         </button>
-        {% render 'account-actions' %}
+        {%- comment -%}[2026-03-17] A11y: dialog render keeps default 'account-drawer-heading' matched by aria-labelledby above{%- endcomment -%}
+        {% render 'account-actions', heading_id: 'account-drawer-heading' %}
       </dialog>
     </dialog-component>
   {% endif %}

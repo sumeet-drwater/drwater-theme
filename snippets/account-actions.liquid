@@ -1,8 +1,9 @@
 <div class="account-actions">
   <div class="account-actions__main-menu">
     <header class="account-actions__header">
+      {%- comment -%}[2026-03-17] A11y: accept optional heading_id to avoid duplicate IDs when snippet is rendered twice (popover + dialog){%- endcomment -%}
       <h2
-        id="account-drawer-heading"
+        {% if heading_id %}id="{{ heading_id }}"{% else %}id="account-drawer-heading"{% endif %}
         class="account-actions__title h5"
       >
         {% if customer and customer.first_name != blank %}

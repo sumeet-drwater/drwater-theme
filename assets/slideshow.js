@@ -353,7 +353,8 @@ export class Slideshow extends Component {
     if (current) current.textContent = `${value + 1}`;
 
     for (const controls of [thumbnails, dots]) {
-      controls?.forEach((el, i) => el.setAttribute('aria-selected', `${i === value}`));
+      // [2026-03-17] A11y: aria-current instead of aria-selected — buttons lack role="tab" so aria-selected is invalid here
+      controls?.forEach((el, i) => el.setAttribute('aria-current', `${i === value}`));
     }
 
     if (previous) previous.disabled = Boolean(!this.infinite && value === 0);

@@ -17,7 +17,8 @@
 {%- enddoc -%}
 
 {% liquid
-  assign widths = widths | default: '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+  {%- comment -%}[2026-03-17] Speed: capped from 3840→1200 — product images display at max ~800px{%- endcomment -%}
+  assign widths = widths | default: '240, 352, 832, 1200'
 %}
 
 <div
@@ -26,7 +27,8 @@
   data-media-id="{{ media.id }}"
 >
   {% liquid
-    assign high_res_url = media.preview_image | image_url: width: 3840
+    {%- comment -%}[2026-03-17] Speed: capped from 3840→1920 for high-res zoom view{%- endcomment -%}
+    assign high_res_url = media.preview_image | image_url: width: 1920
     assign fetch_priority = 'auto'
     if is_main_product_media
       assign fetch_priority = 'high'
