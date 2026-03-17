@@ -216,11 +216,17 @@
     </template>
 
     {%- comment -%}
-      [2026-03-17] Speed fix: skip eager render when auto_yt_poster_url is set
-      (facade handles the click-to-play). Previously this branch eagerly loaded
-      the full YouTube iframe (912KB) whenever no cover image was configured.
+      Speed fix: skip eager render when auto_yt_poster_url is set
+      (facade handles click-to-play). Parentheses not supported in Liquid if —
+      use pre-assigned boolean instead.
     {%- endcomment -%}
-    {% if video_autoplay or (video_preview_image == blank and auto_yt_poster_url == nil) %}
+    {%- assign show_eager_video = false -%}
+    {%- if video_autoplay -%}
+      {%- assign show_eager_video = true -%}
+    {%- elsif video_preview_image == blank and auto_yt_poster_url == nil -%}
+      {%- assign show_eager_video = true -%}
+    {%- endif -%}
+    {% if show_eager_video %}
       {% if video_from_url %}
         {{ video_iframe }}
       {% else %}
