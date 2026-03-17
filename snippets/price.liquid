@@ -141,6 +141,18 @@ endif
   <span class="discount-percentage">
     {% if product.handle == 'dr-water-hydrotumbler' %}
       Save {{ discount_percentage }}% use code 'PATRICKSDAY' 🍀
+      <copy-to-clipboard-component text-to-copy="PATRICKSDAY" style="display:inline-flex;align-items:center;vertical-align:middle;">
+        <button
+          type="button"
+          on:click="/copyToClipboard"
+          aria-label="Copy discount code PATRICKSDAY"
+          style="background:none;border:none;cursor:pointer;padding:0 0 0 4px;color:inherit;line-height:1;vertical-align:middle;"
+        >
+          <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+            {%- render 'icon', icon: 'clipboard' -%}
+          </svg>
+        </button>
+      </copy-to-clipboard-component>
     {% else %}
       Save {{ discount_percentage }}% on first order
     {% endif %}
