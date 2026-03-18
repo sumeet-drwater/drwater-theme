@@ -163,8 +163,9 @@
   items that have no compare_at markup.
 {%- endcomment -%}
 {%- for item in cart.items -%}
-  {%- if item.compare_at_price > item.price -%}
-    {%- assign item_savings = item.compare_at_price | minus: item.price -%}
+  {%- assign item_compare = item.variant.compare_at_price | default: 0 -%}
+  {%- if item_compare > item.original_price -%}
+    {%- assign item_savings = item_compare | minus: item.original_price -%}
     {%- assign item_savings = item_savings | times: item.quantity -%}
     {%- assign total_savings = total_savings | plus: item_savings -%}
   {%- else -%}
