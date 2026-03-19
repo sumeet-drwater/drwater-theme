@@ -769,7 +769,7 @@
               "type": "button",
               "settings": {
                 "label": "Shop the Hydrator Pro",
-                "link": "shopify://products/dr-water-hydrotumbler",
+                "link": "https://drwater.store/products/dr-water-hydrator-pro",
                 "open_in_new_tab": false,
                 "add_border_radius": true,
                 "border_radius": 100,
