@@ -123,10 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
     '.cart-upsell-grid, .product-video-list, .variant-option--swatches'
   );
 
-  if (!dragScrollElements.length) {
-    console.warn("No drag scroll elements found.");
-    return;
-  }
+  if (!dragScrollElements.length) return;
 
   dragScrollElements.forEach((dragContainer) => {
 
@@ -165,16 +162,15 @@ document.addEventListener("DOMContentLoaded", function () {
       event.preventDefault();
     });
 
-    // Horizontal Wheel Scroll
+    // Horizontal Wheel Scroll — passive:true lets browser optimize scroll
     dragContainer.addEventListener(
       "wheel",
       function (event) {
         if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
           dragContainer.scrollLeft += event.deltaX;
-          event.preventDefault();
         }
       },
-      { passive: false }
+      { passive: true }
     );
 
     // Touch Support

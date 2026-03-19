@@ -104,7 +104,7 @@ h1,
 }
 .menu-list__link-title+svg {
     margin-left: 8px;
-    transition: all 200ms ease-in-out;
+    transition: transform 200ms ease-in-out;
 }
 
 .menu-list__list-item:hover > .menu-list__link > svg {
@@ -414,11 +414,12 @@ summary.details__header {
     font-family: 'JUST-Sans-Medium' !important;
 }
 footer .menu__item a{
-    transition:all 200ms ease;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color 200ms ease;
 }
 
 footer .menu__item a:hover {
-    border-bottom: 1px solid;
+    border-bottom-color: currentColor;
 }
 
 .people-viewing__icon .divider{
@@ -494,7 +495,7 @@ footer .menu__item a:hover {
     overflow: hidden;
 }
 .features_img img{
-    transition:all 300ms ease;
+    transition: scale 300ms ease;
 }
 .features_img:hover img{
     scale:1.1;
