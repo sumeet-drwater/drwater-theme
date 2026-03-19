@@ -164,7 +164,7 @@
         }, 1000);
       }
 
-      updateCountdown() {
+      {% comment %} updateCountdown() {
         const endDateTime = new Date(this.endDate + 'T' + this.endTime).getTime();
         const now = new Date().getTime();
         const distance = endDateTime - now;
@@ -187,7 +187,40 @@
         this.hoursElement.textContent = this.padZero(hours);
         this.minutesElement.textContent = this.padZero(minutes);
         this.secondsElement.textContent = this.padZero(seconds);
-      }
+      } {% endcomment %}
+
+{% comment %} New Code for timer starts here {% endcomment %}
+      updateCountdown() {
+  const now = new Date();
+
+  const [hours, minutes, seconds] = (this.endTime || '23:59:59').split(':').map(Number);
+
+  let endDateTime = new Date();
+  endDateTime.setHours(hours, minutes, seconds, 0);
+
+  if (now.getTime() > endDateTime.getTime()) {
+    endDateTime.setDate(endDateTime.getDate() + 1);
+  }
+
+  const distance = endDateTime.getTime() - now.getTime();
+
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const remainingHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const remainingMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const remainingSeconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  this.displayElement.style.display = 'flex';
+  this.expiredElement.style.display = 'none';
+
+  if (this.daysElement) {
+    this.daysElement.textContent = this.padZero(days);
+  }
+  this.hoursElement.textContent = this.padZero(remainingHours);
+  this.minutesElement.textContent = this.padZero(remainingMinutes);
+  this.secondsElement.textContent = this.padZero(remainingSeconds);
+}
+
+      {% comment %} Timer Changes End here {% endcomment %}
 
       padZero(num) {
         return num.toString().padStart(2, '0');
