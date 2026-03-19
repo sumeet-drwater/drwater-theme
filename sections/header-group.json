@@ -171,7 +171,7 @@
         "ai_gen_block_ef56dbf_P96A46": {
           "type": "ai_gen_block_ef56dbf",
           "settings": {
-            "heading": "St. Patricks Day Offer",
+            "heading": "Women's Day Offer",
             "end_date": "2026-03-20",
             "end_time": "23:59:59",
             "expired_message": "This offer has ended",
@@ -179,11 +179,11 @@
             "padding": 8,
             "gap": 20,
             "unit_gap": 6,
-            "background_color": "#d6e264",
-            "heading_color": "#142b77",
-            "number_color": "#142b77",
-            "label_color": "#142b77",
-            "expired_color": "#142b77",
+            "background_color": "#600e0f",
+            "heading_color": "#ffffff",
+            "number_color": "#ffffff",
+            "label_color": "#ffffff",
+            "expired_color": "#ffffff",
             "heading_size": 14,
             "number_size": 16,
             "expired_size": 20
